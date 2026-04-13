@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPUniversity</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="app-shell">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <h1>🎓 NPUniversity</h1>
+            <p>Your On-Device AI Campus</p>
+        </div>
+
+        <div class="nav-section-label">Discover</div>
+        <div class="nav-item active" data-page="hardware" onclick="navigateTo('hardware')">
+            <span class="nav-icon">🔍</span> Hardware Detection
+        </div>
+        <div class="nav-item" data-page="models" onclick="navigateTo('models')">
+            <span class="nav-icon">🤖</span> Model Recommendations
+        </div>
+
+        <div class="nav-section-label">Learn</div>
+        <div class="nav-item" data-page="foundry" onclick="navigateTo('foundry')">
+            <span class="nav-icon">🏗️</span> Foundry Local
+        </div>
+        <div class="nav-item" data-page="toolkit" onclick="navigateTo('toolkit')">
+            <span class="nav-icon">🧰</span> AI Toolkit
+        </div>
+
+        <div class="nav-section-label">Windows AI Features</div>
+        <div class="nav-item" data-page="recall" onclick="navigateTo('recall')">
+            <span class="nav-icon">🔄</span> Recall
+        </div>
+        <div class="nav-item" data-page="clicktodo" onclick="navigateTo('clicktodo')">
+            <span class="nav-icon">👆</span> Click to Do
+        </div>
+        <div class="nav-item" data-page="semanticsearch" onclick="navigateTo('semanticsearch')">
+            <span class="nav-icon">🔎</span> Semantic Search
+        </div>
+
+        <div class="sidebar-footer">
+            <button class="tour-launch-btn" onclick="openTourSetup()">
+                🎓 Professor Guided Tour
+            </button>
+            <div class="foundry-status">
+                <span class="status-dot" id="foundryDot"></span>
+                <span id="foundryStatusText">Checking Foundry...</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Hardware Detection Page -->
+        <div class="page active" id="page-hardware">
+            <div class="page-header">
+                <h2>Hardware Detection</h2>
+                <p>Analyzing your system's AI capabilities — CPU, GPU, and NPU</p>
+            </div>
+
+            <div id="hw-loading">
+                <div class="hw-grid">
+                    <div class="hw-card cpu"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line"></div></div>
+                    <div class="hw-card gpu"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line"></div></div>
+                    <div class="hw-card npu"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line"></div></div>
+                </div>
+            </div>
+
+            <div id="hw-results" style="display:none">
+                <div class="hw-grid">
+                    <div class="hw-card cpu">
+                        <div class="hw-label">CPU</div>
+                        <div class="hw-name" id="cpuName">—</div>
+                        <div class="hw-status" id="cpuArch">—</div>
+                        <span class="hw-badge badge-active" id="cpuBadge">✓ Active</span>
+                    </div>
+                    <div class="hw-card gpu">
+                        <div class="hw-label">GPU</div>
+                        <div class="hw-name" id="gpuName">—</div>
+                        <div class="hw-status">Graphics Processor</div>
+                        <span class="hw-badge" id="gpuBadge">—</span>
+                    </div>
+                    <div class="hw-card npu">
+                        <div class="hw-label">NPU</div>
+                        <div class="hw-name" id="npuName">—</div>
+                        <div class="hw-status" id="npuStatus">—</div>
+                        <span class="hw-badge" id="npuBadge">—</span>
+                    </div>
+                </div>
+
+                <div class="summary-bar" id="summaryBar">
+                    <span class="summary-item"><strong id="vendorName">—</strong></span>
+                    <span class="summary-item" id="ramInfo">— GB RAM</span>
+                </div>
+
+                <div class="card" id="npuInfoCard" style="display:none">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🎯</div>
+                        <div>
+                            <h3>You have an NPU!</h3>
+                            <div class="card-subtitle">Your device is a Copilot+ PC with dedicated AI silicon</div>
+                        </div>
+                    </div>
+                    <p style="font-size:14px;color:var(--text-dim);line-height:1.7;">
+                        Your Neural Processing Unit (NPU) is a dedicated chip designed to run AI workloads 
+                        with exceptional power efficiency. Unlike running AI on your CPU (which heats up and 
+                        drains battery) or GPU (which competes with display tasks), the NPU handles AI inference 
+                        while barely sipping power. This means <strong style="color:var(--purple)">always-on AI features</strong> 
+                        like Recall, Click to Do, and Semantic Search can run continuously in the background 
+                        without impacting your battery life or system performance.
+                    </p>
+                    <div class="info-box tip">
+                        NPU models in Foundry Local use the <strong>QNN (Qualcomm Neural Network)</strong> execution provider, 
+                        specifically optimized for the Hexagon processor in your Snapdragon chip.
+                    </div>
+                </div>
+
+                <div class="card" id="noNpuCard" style="display:none">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">💡</div>
+                        <div>
+                            <h3>No NPU Detected</h3>
+                            <div class="card-subtitle">You can still run on-device AI using your CPU</div>
+                        </div>
+                    </div>
+                    <p style="font-size:14px;color:var(--text-dim);line-height:1.7;">
+                        While you don't have an NPU, Foundry Local has an excellent selection of CPU-optimized models. 
+                        Your CPU handles a wider range of models (including larger ones) — the trade-off is higher 
+                        power consumption and slightly slower inference compared to NPU-accelerated models. 
+                        Check the Model Recommendations page for the best picks for your hardware.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Model Recommendations Page -->
+        <div class="page" id="page-models">
+            <div class="page-header">
+                <h2>Model Recommendations</h2>
+                <p>Best SLMs for your hardware, organized by task</p>
+            </div>
+
+            <div id="models-loading">
+                <div class="rec-grid">
+                    <div class="rec-card"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line"></div></div>
+                    <div class="rec-card"><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line"></div></div>
+                </div>
+            </div>
+            <div id="models-results" style="display:none">
+                <div class="rec-grid" id="recGrid"></div>
+            </div>
+        </div>
+
+        <!-- Foundry Local Page -->
+        <div class="page" id="page-foundry">
+            <div class="page-header">
+                <h2>Foundry Local</h2>
+                <p>Microsoft's local model runtime — run SLMs entirely on your device</p>
+            </div>
+
+            <div class="feature-hero">
+                <h3>Run AI models locally, no cloud required</h3>
+                <p>Foundry Local is an OpenAI-compatible local inference server. It manages model downloads, 
+                   hardware optimization (CPU/NPU), and exposes a standard API you can use from any language.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">📦</div>
+                    <div><h3>Installation</h3><div class="card-subtitle">Get Foundry Local running on your machine</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Install via winget</h4>
+                            <p>Open a terminal and run:</p>
+                            <div class="cmd-block">winget install Microsoft.FoundryLocal<button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Start the service</h4>
+                            <p>Foundry Local auto-starts when needed, but you can manually control it:</p>
+                            <div class="cmd-block">foundry service start<button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>List available models</h4>
+                            <p>See all models optimized for your hardware (CPU + NPU if available):</p>
+                            <div class="cmd-block">foundry model list<button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Run a model interactively</h4>
+                            <p>Start chatting with a model directly in your terminal:</p>
+                            <div class="cmd-block">foundry model run phi-4-mini<button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+                            <div class="info-box tip">For NPU models, add <code>--device NPU</code>: 
+                            <code>foundry model run qwen2.5-7b --device NPU</code></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">🔌</div>
+                    <div><h3>Using the API</h3><div class="card-subtitle">OpenAI-compatible REST API for your apps</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);margin-bottom:16px;">
+                    Foundry Local exposes an OpenAI-compatible API. Use it with the OpenAI Python SDK, curl, or any HTTP client.
+                    The service URL has a dynamic port — discover it with <code>foundry service status</code>.
+                </p>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">Py</div>
+                        <div class="step-content">
+                            <h4>Python with OpenAI SDK</h4>
+<div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;">from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://127.0.0.1:PORT/v1",
+    api_key="not-needed"
+)
+
+response = client.chat.completions.create(
+    model="Phi-4-mini-instruct-generic-cpu:5",
+    messages=[{"role": "user", "content": "Hello!"}]
+)
+print(response.choices[0].message.content)</pre></div>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">C#</div>
+                        <div class="step-content">
+                            <h4>C# with Microsoft.Extensions.AI</h4>
+<div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;">using Microsoft.Extensions.AI;
+
+var client = new FoundryLocalClient("phi-4-mini");
+var chatClient = client.CreateChatCompletionClient();
+
+var response = await chatClient.GetResponseAsync(
+    "What can you help me with?");
+Console.WriteLine(response);</pre></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--amber-dim);color:var(--amber)">⚡</div>
+                    <div><h3>Key Commands</h3><div class="card-subtitle">Essential Foundry Local CLI commands</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead>
+                        <tr><th>Command</th><th>Description</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>foundry model list</code></td><td>List all available models for your hardware</td></tr>
+                        <tr><td><code>foundry model run &lt;alias&gt;</code></td><td>Run a model interactively in the terminal</td></tr>
+                        <tr><td><code>foundry model run &lt;alias&gt; --device NPU</code></td><td>Run on NPU specifically</td></tr>
+                        <tr><td><code>foundry service start</code></td><td>Start the local inference server</td></tr>
+                        <tr><td><code>foundry service stop</code></td><td>Stop the server and free resources</td></tr>
+                        <tr><td><code>foundry service status</code></td><td>Check status and discover the API URL</td></tr>
+                        <tr><td><code>foundry cache list</code></td><td>See downloaded/cached models</td></tr>
+                        <tr><td><code>foundry cache remove &lt;model&gt;</code></td><td>Delete a cached model to free disk space</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- AI Toolkit Page -->
+        <div class="page" id="page-toolkit">
+            <div class="page-header">
+                <h2>AI Toolkit for VS Code</h2>
+                <p>Fine-tune, test, and deploy AI models right from your editor</p>
+            </div>
+
+            <div class="feature-hero">
+                <h3>Your AI development workbench</h3>
+                <p>AI Toolkit is a VS Code extension that brings model exploration, prompt testing, fine-tuning, 
+                   and deployment into a single, integrated experience.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🚀</div>
+                    <div><h3>Getting Started</h3><div class="card-subtitle">Set up AI Toolkit in minutes</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Install the Extension</h4>
+                            <p>Open VS Code and install <strong>AI Toolkit</strong> from the Extensions marketplace, or run:</p>
+                            <div class="cmd-block">code --install-extension ms-windows-ai-studio.windows-ai-studio<button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Browse the Model Catalog</h4>
+                            <p>Click the AI Toolkit icon in the sidebar. Browse models from Hugging Face, ONNX model zoo, 
+                               and Azure AI — filtered by what runs on your hardware.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Test in the Playground</h4>
+                            <p>Use the built-in <strong>Model Playground</strong> to send prompts and compare model outputs. 
+                               Adjust temperature, max tokens, and system prompts interactively.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Fine-tune with LoRA</h4>
+                            <p>Fine-tune models on your own data using <strong>QLoRA</strong> — memory-efficient fine-tuning 
+                               that works even on devices with limited VRAM. AI Toolkit handles the training setup.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🎯</div>
+                    <div><h3>Key Features</h3><div class="card-subtitle">What AI Toolkit can do for you</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Feature</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Model Catalog</strong></td><td>Browse, search, and download models optimized for local inference (ONNX, PyTorch)</td></tr>
+                        <tr><td><strong>Playground</strong></td><td>Interactive prompt testing with side-by-side model comparison</td></tr>
+                        <tr><td><strong>Fine-tuning</strong></td><td>LoRA/QLoRA fine-tuning with custom datasets, integrated into VS Code</td></tr>
+                        <tr><td><strong>Batch Inference</strong></td><td>Run prompts against datasets for evaluation and benchmarking</td></tr>
+                        <tr><td><strong>ONNX Export</strong></td><td>Convert and optimize models to ONNX format for cross-platform deployment</td></tr>
+                        <tr><td><strong>Foundry Integration</strong></td><td>Seamlessly use Foundry Local models in the playground and your apps</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    AI Toolkit + Foundry Local is the fastest way to go from "exploring models" to "running AI in your app" — 
+                    all without leaving VS Code or needing cloud resources.
+                </div>
+            </div>
+        </div>
+
+        <!-- Recall Page -->
+        <div class="page" id="page-recall">
+            <div class="page-header">
+                <h2>Recall</h2>
+                <p>AI-powered photographic memory for your PC — powered by your NPU</p>
+            </div>
+
+            <div class="feature-hero" style="border-left: 3px solid var(--purple);">
+                <h3>🔄 Find anything you've ever seen on your PC</h3>
+                <p>Recall takes periodic snapshots of your screen and uses on-device AI to make everything 
+                   searchable by natural language. Ask "that email about the project deadline" and Recall finds it.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🔒</div>
+                    <div><h3>Privacy First</h3><div class="card-subtitle">Everything stays on your device</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    Recall processes everything <strong>locally on your NPU</strong>. Screenshots never leave your device, 
+                    are encrypted with Windows Hello, and stored in a protected container. You have full control over 
+                    what gets saved and can delete snapshots at any time.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Privacy Feature</th><th>Detail</th></tr></thead>
+                    <tbody>
+                        <tr><td>🔐 Encryption</td><td>Snapshots encrypted with Windows Hello (biometric/PIN) — even admins can't access your data</td></tr>
+                        <tr><td>🖥️ On-device AI</td><td>OCR and semantic indexing runs entirely on the NPU — no cloud processing</td></tr>
+                        <tr><td>🚫 Sensitive content</td><td>Automatically filters passwords, credit cards, and private browsing sessions</td></tr>
+                        <tr><td>🗑️ Full control</td><td>Pause anytime, exclude apps/websites, delete specific snapshots or entire history</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">⚙️</div>
+                    <div><h3>How to Enable Recall</h3><div class="card-subtitle">Get started on your Copilot+ PC</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Check requirements</h4>
+                            <p>You need a <strong>Copilot+ PC</strong> with an NPU (40+ TOPS), 16GB+ RAM, 256GB+ storage, 
+                               and BitLocker/Device Encryption enabled.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Open Settings</h4>
+                            <p>Go to <code>Settings → Privacy & Security → Recall & snapshots</code></p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Enable and configure</h4>
+                            <p>Toggle Recall on and set your preferences: storage allocation (25-150GB), 
+                               excluded apps, and excluded websites. Authenticate with Windows Hello.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Search your timeline</h4>
+                            <p>Press <strong>Win + J</strong> to open Recall, or click the Recall icon in the taskbar. 
+                               Type a natural language query like "presentation about Q3 results" to find it.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">🧠</div>
+                    <div><h3>How It Works Under the Hood</h3><div class="card-subtitle">The NPU does the heavy lifting</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">📸</div>
+                        <div class="step-content">
+                            <h4>Screen Capture</h4>
+                            <p>Periodic screenshots are taken (every ~5 seconds when content changes). 
+                               Images are immediately encrypted before any processing.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">📝</div>
+                        <div class="step-content">
+                            <h4>NPU-Powered OCR</h4>
+                            <p>The NPU runs optical character recognition on each snapshot, extracting all visible text 
+                               with minimal power draw. This enables text search across screenshots.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">🔗</div>
+                        <div class="step-content">
+                            <h4>Semantic Embedding</h4>
+                            <p>Extracted text is converted into semantic vectors (embeddings) by the NPU, enabling 
+                               meaning-based search — so "vacation photos" finds screenshots of beach pictures even 
+                               if those words never appeared on screen.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Click to Do Page -->
+        <div class="page" id="page-clicktodo">
+            <div class="page-header">
+                <h2>Click to Do</h2>
+                <p>Context-aware AI actions on anything visible on your screen</p>
+            </div>
+
+            <div class="feature-hero" style="border-left: 3px solid var(--green);">
+                <h3>👆 Point at anything, get smart actions</h3>
+                <p>Click to Do analyzes on-screen content in real-time using your NPU and suggests 
+                   intelligent actions — summarize text, edit images, search the web, and more.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">⚡</div>
+                    <div><h3>How to Use Click to Do</h3><div class="card-subtitle">Activate and interact</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Activate the overlay</h4>
+                            <p>Press <strong>Win + Mouse Click</strong> or <strong>Win + Q</strong> to activate Click to Do. 
+                               A translucent overlay appears on top of your current screen.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Select content</h4>
+                            <p>Click on any text, image, or UI element. Click to Do uses the NPU to analyze 
+                               what you're pointing at — reading text, identifying images, and understanding context.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Choose an action</h4>
+                            <p>A context menu appears with smart suggestions based on the content type. 
+                               Actions vary depending on whether you selected text, an image, or a link.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">🎯</div>
+                    <div><h3>Available Actions</h3><div class="card-subtitle">What Click to Do can do with different content</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Content Type</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        <tr><td>📝 <strong>Text</strong></td><td>Summarize, rewrite, explain, translate, copy, search the web, send to Copilot</td></tr>
+                        <tr><td>🖼️ <strong>Images</strong></td><td>Remove background, erase objects, search for visually similar images, save, edit in Photos</td></tr>
+                        <tr><td>🔗 <strong>URLs / Links</strong></td><td>Open, copy, search related content</td></tr>
+                        <tr><td>📊 <strong>Data / Tables</strong></td><td>Copy as structured data, summarize, analyze trends</td></tr>
+                        <tr><td>📧 <strong>Contact Info</strong></td><td>Create contact, send email, call, add to calendar</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box note">
+                    Click to Do works across <em>any</em> application — it operates on the screen pixels, not app APIs. 
+                    This means it works with PDFs, images, legacy desktop apps, and even remote desktop sessions.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">⚙️</div>
+                    <div><h3>Configuration</h3><div class="card-subtitle">Customize Click to Do behavior</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;">
+                    Navigate to <code>Settings → Bluetooth & devices → Touchpad → Click to Do</code> (or search 
+                    "Click to Do" in Settings). You can configure the activation gesture, choose default actions 
+                    for different content types, and exclude specific applications.
+                </p>
+            </div>
+        </div>
+
+        <!-- Semantic Search Page -->
+        <div class="page" id="page-semanticsearch">
+            <div class="page-header">
+                <h2>Semantic Search</h2>
+                <p>Search by meaning, not just keywords — powered by on-device AI</p>
+            </div>
+
+            <div class="feature-hero" style="border-left: 3px solid var(--blue);">
+                <h3>🔎 "Find that document about budget planning"</h3>
+                <p>Windows Semantic Search understands what you mean, not just what you type. It uses the NPU to 
+                   generate embeddings for your files, so you can search by concept instead of exact filenames.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">🧠</div>
+                    <div><h3>How Semantic Search Works</h3><div class="card-subtitle">AI-enhanced Windows Search</div></div>
+                </div>
+                <div class="feature-steps">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Content Indexing</h4>
+                            <p>Windows scans your documents, emails, and files. The NPU generates <strong>semantic embeddings</strong> — 
+                               numerical vectors that capture meaning — for each piece of content. This happens in the background 
+                               with negligible performance impact thanks to NPU efficiency.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Natural Language Queries</h4>
+                            <p>When you search, your query is also converted to an embedding. The system finds documents whose 
+                               meaning is closest to your query — even if they don't contain the exact words you typed.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Ranked Results</h4>
+                            <p>Results are ranked by semantic similarity, combining traditional keyword matching with 
+                               AI understanding. This means a search for "vacation plans" can find a file named 
+                               "summer-trip-itinerary.docx" even though those words don't overlap.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">💡</div>
+                    <div><h3>Tips for Better Searches</h3><div class="card-subtitle">Get the most out of Semantic Search</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Instead of...</th><th>Try...</th></tr></thead>
+                    <tbody>
+                        <tr><td><code>budget.xlsx</code></td><td>"quarterly budget spreadsheet with projections"</td></tr>
+                        <tr><td><code>meeting notes</code></td><td>"notes from the design review last week"</td></tr>
+                        <tr><td><code>photo beach</code></td><td>"vacation photos from the coast"</td></tr>
+                        <tr><td><code>email john</code></td><td>"conversation about the product launch timeline"</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    Semantic Search is integrated into the Windows Start menu search, File Explorer, and Settings. 
+                    Just start typing naturally — the AI enhancement works automatically on Copilot+ PCs.
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">🔧</div>
+                    <div><h3>For Developers</h3><div class="card-subtitle">Build semantic search into your apps</div></div>
+                </div>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                    You can leverage on-device embeddings for your own applications using <strong>Windows Copilot Runtime APIs</strong>. 
+                    Generate text embeddings locally using the NPU for vector search, RAG pipelines, and intelligent document retrieval — 
+                    all without cloud costs or latency.
+                </p>
+                <div class="info-box note">
+                    The Windows Copilot Runtime <strong>TextEmbedding</strong> API generates 384-dimensional vectors using the 
+                    NPU-accelerated model. Use it with any vector database (FAISS, ChromaDB, Qdrant) for local RAG applications.
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Page (replaced by Professor NPU widget) -->
+        <div class="page" id="page-chat" style="display:none!important">
+            <div class="page-header">
+                <h2>AI Guide Chat</h2>
+                <p>Ask anything about NPUs, Foundry Local, AI Toolkit, and on-device AI</p>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-model-select">
+                    <label>Model:</label>
+                    <select id="chatModelSelect">
+                        <option value="">Loading models...</option>
+                    </select>
+                    <span class="foundry-status" style="margin-left:auto;">
+                        <span class="status-dot" id="chatFoundryDot"></span>
+                        <span id="chatFoundryStatus">Checking...</span>
+                    </span>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-msg assistant">
+                        <div class="chat-avatar">AI</div>
+                        <div class="chat-bubble">
+                            <p>👋 Hey there! I'm your <strong>NPU Getting Started</strong> guide. I can help you with:</p>
+                            <ul>
+                                <li><strong>Foundry Local</strong> — installing, running models, using the API</li>
+                                <li><strong>AI Toolkit</strong> — model testing, fine-tuning, playground</li>
+                                <li><strong>NPU Features</strong> — Recall, Click to Do, Semantic Search</li>
+                                <li><strong>Model selection</strong> — which SLM for which task</li>
+                            </ul>
+                            <p>Try one of the quick actions below, or ask me anything!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-quick-actions" id="quickActions">
+                    <button class="quick-btn" onclick="sendQuick('How do I run my first model in Foundry Local?')">🏗️ First Foundry model</button>
+                    <button class="quick-btn" onclick="sendQuick('What NPU models are available and which should I try first?')">⚡ Best NPU models</button>
+                    <button class="quick-btn" onclick="sendQuick('How do I set up AI Toolkit in VS Code?')">🧰 Set up AI Toolkit</button>
+                    <button class="quick-btn" onclick="sendQuick('Explain how Recall works and how to enable it')">🔄 Enable Recall</button>
+                    <button class="quick-btn" onclick="sendQuick('How can I build an app that uses Foundry Local for local AI?')">💻 Build an AI app</button>
+                    <button class="quick-btn" onclick="sendQuick('What is Click to Do and how do I use it?')">👆 Click to Do</button>
+                </div>
+
+                <div class="chat-input-area">
+                    <textarea id="chatInput" placeholder="Ask about NPUs, Foundry Local, AI Toolkit..." rows="1"
+                              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
+                    <button class="btn-send" id="sendBtn" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- Professor Guided Tour — Full-Screen Overlay -->
+<div class="tour-overlay" id="tourOverlay">
+
+    <!-- SETUP SCREEN (covers everything before a plan is built) -->
+    <div class="tour-setup-screen" id="tourSetupScreen">
+        <button class="tour-exit-btn" onclick="closeTour()">✕ Exit Tour</button>
+        <div class="tour-setup-card">
+            <div class="tour-setup-header">
+                <span class="tour-hat">🎓</span>
+                <h2>Professor NPU's Guided Tour</h2>
+                <p>I'll build a custom lesson plan that maximizes your learning time. Pick your schedule and depth.</p>
+            </div>
+            <div class="tour-setup-body">
+                <label class="prof-label">⏱️ How much time do you have?</label>
+                <div class="time-options" id="timeOptions">
+                    <button class="time-btn" onclick="selectTime(15)">15 min</button>
+                    <button class="time-btn active" onclick="selectTime(30)">30 min</button>
+                    <button class="time-btn" onclick="selectTime(45)">45 min</button>
+                    <button class="time-btn" onclick="selectTime(60)">60 min</button>
+                    <button class="time-btn" onclick="selectTime(90)">90 min</button>
+                </div>
+                <label class="prof-label">📚 Course level:</label>
+                <div class="level-options" id="levelOptions">
+                    <button class="level-btn" onclick="selectLevel(100)">
+                        <strong>100</strong><span>Intro</span>
+                    </button>
+                    <button class="level-btn active" onclick="selectLevel(200)">
+                        <strong>200</strong><span>Fundamentals</span>
+                    </button>
+                    <button class="level-btn" onclick="selectLevel(300)">
+                        <strong>300</strong><span>Intermediate</span>
+                    </button>
+                    <button class="level-btn" onclick="selectLevel(400)">
+                        <strong>400</strong><span>Advanced</span>
+                    </button>
+                </div>
+                <button class="prof-build-btn" onclick="buildLessonPlan()">
+                    Start Guided Tour →
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACTIVE TOUR (3-column layout: lesson rail | content | professor chat) -->
+    <div class="tour-active" id="tourActive" style="display:none">
+
+        <!-- Left rail — lesson plan -->
+        <aside class="tour-rail">
+            <div class="tour-rail-header">
+                <div class="tour-rail-brand">
+                    <span>🎓</span>
+                    <div>
+                        <strong>Guided Tour</strong>
+                        <div class="tour-rail-meta">
+                            <span class="plan-badge" id="planLevel">Level 200</span>
+                            <span class="plan-badge" id="planTime">30 min</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="tour-exit-sm" onclick="closeTour()" title="Exit tour">✕</button>
+            </div>
+            <div class="tour-progress-bar">
+                <div class="tour-progress-fill" id="tourProgressFill" style="width:0%"></div>
+            </div>
+            <div class="tour-progress-text" id="planProgress">0 / 0 lessons complete</div>
+            <div class="tour-lessons" id="planLessons"></div>
+            <button class="plan-reset-btn" onclick="resetPlan()">← New Plan</button>
+        </aside>
+
+        <!-- Centre — page content (cloned from main) -->
+        <div class="tour-content" id="tourContent">
+            <div class="tour-content-inner" id="tourContentInner">
+                <!-- Content pages will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Right panel — Professor NPU chat -->
+        <aside class="tour-chat">
+            <div class="tour-chat-header">
+                <span class="tour-hat-sm">🎓</span>
+                <div>
+                    <strong>Professor NPU</strong>
+                    <span class="prof-title">Ask me anything about this lesson</span>
+                </div>
+            </div>
+            <div class="tour-chat-messages" id="profMessages"></div>
+            <div class="tour-chat-input">
+                <input type="text" id="profInput" placeholder="Ask Professor NPU…"
+                       onkeydown="if(event.key==='Enter')sendProfMessage()">
+                <button class="prof-send-btn" onclick="sendProfMessage()">→</button>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
