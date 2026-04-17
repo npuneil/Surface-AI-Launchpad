@@ -1,3 +1,21 @@
+.demo-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    background: #f59e0b;
+    color: #000;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 6px 0;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+body { padding-top: 32px; }
+
 :root {
     --bg: #0a0a0f;
     --surface: #12121a;
