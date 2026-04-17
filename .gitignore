@@ -3,3 +3,7 @@ __pycache__/
 .env
 
 NPUniversity.zip
+
+*.msix
+NPUniversity.Desktop/bin/
+NPUniversity.Desktop/obj/
