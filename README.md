@@ -1,6 +1,6 @@
-# NPUniversity 🎓
+# NPUniversity — On-Device AI Learning Campus 🎓
 
-A virtual campus for learning on-device AI with Windows Copilot+ PCs. Featuring **Professor NPU** — your personal AI tour guide who builds custom lesson plans based on your available time and desired depth.
+A virtual campus for learning on-device AI concepts, guided by "Professor NPU" — an AI tutor that adapts lessons by skill level. Running entirely on the NPU (Neural Processing Unit) via Microsoft Foundry Local.
 
 ## On-Device AI Prototypes & Sample Code
 
@@ -55,54 +55,38 @@ By using this repository, you acknowledge that it contains illustrative prototyp
 ## Quick Start
 
 ```powershell
-cd npu-getting-started
-pip install -r requirements.txt
-python app.py
-```
+# Run directly:
+python app.py      # opens at http://localhost:8080
 
-Then open **http://127.0.0.1:8080** in your browser.
+# Or via Docker:
+docker build -t npuniversity .
+docker run -p 8080:8080 npuniversity
+```
 
 ## Prerequisites
 
-- **Python 3.10+**
+- **Windows 11 Copilot+ PC** with Snapdragon X or Intel Core Ultra NPU
+- **Python 3.10+** (ARM64-native recommended for Snapdragon)
 - **Foundry Local** installed (`winget install Microsoft.FoundryLocal`)
-- Foundry service running (`foundry service start`) — needed for Professor NPU chat
 
-## Professor NPU
+## Course Catalog
 
-The floating 🎓 avatar in the bottom-right corner is your AI learning guide. Tell Professor NPU:
+| Level | Topics |
+|-------|--------|
+| **100 — Foundations** | Hardware Detection, Model Recommendations, Foundry Local, AI Toolkit |
+| **200 — Development** | Recall, Click to Do, Semantic Search, Edge AI |
+| **300 — Advanced** | SLM Families, Model Optimization, Windows ML, AI Agents |
+| **400 — Enterprise** | Foundry Cloud, Agent Service, AI Gateway, Hybrid AI |
 
-1. **How much time you have** (15, 30, 45, 60, or 90 minutes)
-2. **Your course level** (100=Intro, 200=Fundamentals, 300=Intermediate, 400=Advanced)
+## Features
 
-Professor NPU builds a custom lesson plan maximizing your learning time, then walks you through each topic with contextual tips and the ability to ask questions.
+| Feature | Description |
+|---------|-------------|
+| **Professor NPU** | AI tutor that adapts explanations to your skill level |
+| **16+ Topics** | Comprehensive curriculum from hardware basics to enterprise patterns |
+| **Interactive Lessons** | Each topic includes overview, hands-on exercises, and quizzes |
+| **Skill Tracking** | Progress tracking across all course levels |
 
-## Course Content
+## Demo Experience
 
-| Level | Description |
-|-------|-------------|
-| **100** | Introduction — no prior knowledge assumed |
-| **200** | Fundamentals — getting started, first steps |
-| **300** | Intermediate — deeper understanding, APIs, configuration |
-| **400** | Advanced — architecture, optimization, building apps |
-
-## Topics Covered
-
-| Topic | Description |
-|-------|-------------|
-| **Hardware Detection** | CPU, GPU, NPU detection and AI capability analysis |
-| **Model Recommendations** | Task-based SLM picks optimized for your hardware |
-| **Foundry Local** | Setup guide, CLI commands, API examples |
-| **AI Toolkit** | VS Code extension for model testing and fine-tuning |
-| **Recall** | NPU-powered screen memory and search |
-| **Click to Do** | Context-aware AI actions on screen content |
-| **Semantic Search** | Meaning-based file search powered by NPU |
-| **Edge AI Fundamentals** | Cloud vs edge trade-offs, architecture patterns |
-| **SLM Model Families** | Phi, Qwen, Gemma, DeepSeek, BitNET landscape |
-| **Model Optimization** | Quantization, pruning, Olive, QNN pipelines |
-| **Windows ML & NPU Dev** | DirectML, Phi-Silica, Copilot Runtime APIs |
-| **AI Agents & Tools** | Local agents, function calling, multi-agent orchestration |
-| **Microsoft Foundry (Cloud)** | Cloud model catalog, GPT-4o deployment, Model Router |
-| **Foundry Agent Service** | Cloud agents, workflows, Foundry IQ knowledge bases |
-| **AI Gateway & Governance** | APIM-backed token limits, quotas, compliance |
-| **Hybrid AI** | Bridging Foundry cloud with Surface Copilot+ PCs via evaluators |
+Launch the app and explore topics across the four course levels. Professor NPU adjusts explanations based on your background — from beginner-friendly overviews to deep technical dives.
