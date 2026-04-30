@@ -44,19 +44,20 @@ public sealed partial class MainWindow : Window
         _prereqs.AddRange(Prerequisites.BuildList());
 
         var vendor = Prerequisites.DetectNpuVendor();
-        PrereqBanner.Title = vendor switch
+        PrereqBannerTitle.Text = vendor switch
         {
             NpuVendor.Qualcomm => "Snapdragon NPU detected",
             NpuVendor.Intel => "Intel Core Ultra NPU detected",
             NpuVendor.AMD => "AMD Ryzen AI NPU detected",
             _ => "No NPU detected"
         };
-        PrereqBanner.Message = vendor == NpuVendor.None
+        PrereqBannerMessage.Text = vendor == NpuVendor.None
             ? "NPUniversity will run on CPU. For best performance use a Copilot+ PC."
             : $"Foundry Local will accelerate models on the {vendor} NPU.";
-        PrereqBanner.Severity = vendor == NpuVendor.None
-            ? InfoBarSeverity.Warning
-            : InfoBarSeverity.Success;
+        PrereqBanner.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(
+            vendor == NpuVendor.None
+                ? Windows.UI.Color.FromArgb(0xFF, 0x5a, 0x3a, 0x1a)
+                : Windows.UI.Color.FromArgb(0xFF, 0x1a, 0x3a, 0x5a));
 
         PrereqList.Children.Clear();
         _rows.Clear();
@@ -315,8 +316,20 @@ public sealed partial class MainWindow : Window
         return false;
     }
 
+    private Microsoft.UI.Xaml.Controls.WebView2? AppWebView;
+
     private async Task InitWebViewAsync()
     {
+        if (AppWebView is null)
+        {
+            AppWebView = new Microsoft.UI.Xaml.Controls.WebView2
+            {
+                DefaultBackgroundColor = Windows.UI.Color.FromArgb(0xFF, 0x0a, 0x0a, 0x0f)
+            };
+            WebViewHost.Children.Add(AppWebView);
+            WebViewHost.Visibility = Visibility.Visible;
+        }
+
         await AppWebView.EnsureCoreWebView2Async();
         AppWebView.CoreWebView2.Settings.IsStatusBarEnabled = false;
         AppWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
@@ -328,7 +341,7 @@ public sealed partial class MainWindow : Window
             DispatcherQueue.TryEnqueue(() =>
             {
                 LoadingOverlay.Visibility = Visibility.Collapsed;
-                AppWebView.Visibility = Visibility.Visible;
+                if (AppWebView is not null) AppWebView.Visibility = Visibility.Visible;
             });
         };
     }

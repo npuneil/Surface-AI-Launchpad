@@ -15,13 +15,18 @@ The packaged MSIX is published as a GitHub Release:
 
 ➡️ **[Download the latest MSIX from Releases](https://github.com/npuneil/NPUniversity/releases/latest)**
 
-Because this is a demo, the MSIX is **unsigned** and must be sideloaded:
+Because this is a demo, the MSIX is signed with a self-signed certificate.
+You must (1) install the certificate as trusted, then (2) sideload the MSIX:
 
 1. Enable Developer Mode (one-time): `Settings → System → For developers → Developer Mode = On`.
-2. Download `NPUniversity-<version>-arm64.msix` from the release page.
-3. Right-click the file → **Install**, or run:
+2. Download `NPUniversity-<version>-arm64.msix` **and** `NPUniversity.cer` from the release page.
+3. From an **elevated** PowerShell, trust the cert (one-time):
    ```powershell
-   Add-AppxPackage .\NPUniversity-1.0.0-arm64.msix
+   Import-Certificate -FilePath .\NPUniversity.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
+   ```
+4. Install the app (no admin needed once cert is trusted):
+   ```powershell
+   Add-AppxPackage .\NPUniversity-<version>-arm64.msix
    ```
 4. Launch **NPUniversity** from the Start menu. The first-run screen detects
    your NPU and installs missing prerequisites (Foundry Local, Python 3.12,

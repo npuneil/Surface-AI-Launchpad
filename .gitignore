@@ -9,3 +9,5 @@ NPUniversity.zip
 dist/
 NPUniversity.Desktop/bin/
 NPUniversity.Desktop/obj/
+tools/PrereqTest/bin/
+tools/PrereqTest/obj/

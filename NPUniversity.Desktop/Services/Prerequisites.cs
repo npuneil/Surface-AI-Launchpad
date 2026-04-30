@@ -85,6 +85,15 @@ public static class Prerequisites
         {
             new()
             {
+                Id = "webview2",
+                Name = "Microsoft Edge WebView2 Runtime",
+                Description = "Renders the NPUniversity UI inside the desktop app.",
+                Required = true,
+                WingetId = "Microsoft.EdgeWebView2Runtime",
+                DocsUrl = "https://developer.microsoft.com/microsoft-edge/webview2/"
+            },
+            new()
+            {
                 Id = "python",
                 Name = "Python 3.10+",
                 Description = "Runs the FastAPI backend that powers NPUniversity.",
@@ -152,6 +161,12 @@ public static class Prerequisites
         {
             switch (item.Id)
             {
+                case "webview2":
+                    var wv2 = DetectWebView2();
+                    item.State = wv2 ? PrereqState.Installed : PrereqState.Missing;
+                    item.Detail = wv2 ? "WebView2 Runtime installed" : "Runtime not installed";
+                    break;
+
                 case "python":
                     var (ok, ver) = TryDetectPython();
                     item.State = ok ? PrereqState.Installed : PrereqState.Missing;
@@ -223,6 +238,29 @@ public static class Prerequisites
         return (false, null);
     }
 
+    static bool DetectWebView2()
+    {
+        try
+        {
+            const string clientId = "{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}";
+            string[] paths = {
+                $@"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{clientId}",
+                $@"SOFTWARE\Microsoft\EdgeUpdate\Clients\{clientId}"
+            };
+            foreach (var p in paths)
+            {
+                using var key = Registry.LocalMachine.OpenSubKey(p);
+                var pv = key?.GetValue("pv") as string;
+                if (!string.IsNullOrEmpty(pv) && pv != "0.0.0.0") return true;
+            }
+            using var hkcu = Registry.CurrentUser.OpenSubKey(
+                $@"Software\Microsoft\EdgeUpdate\Clients\{clientId}");
+            var pvUser = hkcu?.GetValue("pv") as string;
+            return !string.IsNullOrEmpty(pvUser) && pvUser != "0.0.0.0";
+        }
+        catch { return false; }
+    }
+
     static bool DetectVcRedist()
     {
         // Installed VCRedist 14+ writes here.
@@ -289,6 +327,7 @@ public static class Prerequisites
         {
             switch (item.Id)
             {
+                case "webview2":
                 case "python":
                 case "vcredist":
                 case "foundry":

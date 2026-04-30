@@ -24,10 +24,15 @@
                                FontSize="14" Foreground="#9b9bbf"/>
                 </StackPanel>
 
-                <InfoBar Grid.Row="1" x:Name="PrereqBanner" IsOpen="True" IsClosable="False"
-                         Severity="Informational" Margin="0,0,0,12"
-                         Title="Hardware detected"
-                         Message="Checking your accelerator..." />
+                <Border Grid.Row="1" x:Name="PrereqBanner" Background="#1a3a5a"
+                        CornerRadius="4" Padding="12" Margin="0,0,0,12">
+                    <StackPanel>
+                        <TextBlock x:Name="PrereqBannerTitle" Text="Hardware detected"
+                                   FontWeight="SemiBold" Foreground="White"/>
+                        <TextBlock x:Name="PrereqBannerMessage" Text="Checking your accelerator..."
+                                   Foreground="#cccccc" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
 
                 <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
                     <StackPanel x:Name="PrereqList" Spacing="10"/>
@@ -40,10 +45,8 @@
                     <Button x:Name="RecheckButton" Content="Re-check"
                             Click="OnRecheck"/>
                     <Button x:Name="InstallAllButton" Content="Install missing"
-                            Style="{StaticResource AccentButtonStyle}"
                             Click="OnInstallAll"/>
                     <Button x:Name="ContinueButton" Content="Continue to NPUniversity"
-                            Style="{StaticResource AccentButtonStyle}"
                             IsEnabled="False"
                             Click="OnContinue"/>
                 </StackPanel>
@@ -70,9 +73,8 @@
             </StackPanel>
         </Grid>
 
-        <!-- WebView2 fills entire window -->
-        <WebView2 x:Name="AppWebView"
-                  Visibility="Collapsed"
-                  DefaultBackgroundColor="#0a0a0f" />
+        <!-- WebView2 host (control created programmatically — embedded WebView2 in XAML
+             markup crashes the WinUI 3 1.7 ARM64 XAML parser at startup) -->
+        <Grid x:Name="WebViewHost" Visibility="Collapsed" Background="#0a0a0f"/>
     </Grid>
 </Window>
