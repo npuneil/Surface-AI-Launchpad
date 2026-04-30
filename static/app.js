@@ -248,6 +248,11 @@ function openTourSetup() {
     overlay.classList.add('open');
     tourOpen = true;
 
+    // Hide floating professor widget/FAB so they don't cover tour chat
+    document.getElementById('profFab').style.display = 'none';
+    document.getElementById('profWidget').classList.remove('open');
+    document.getElementById('profWidget').style.display = 'none';
+
     // Always show setup, hide active tour
     document.getElementById('tourSetupScreen').style.display = 'flex';
     document.getElementById('tourActive').style.display = 'none';
@@ -257,6 +262,12 @@ function closeTour() {
     const overlay = document.getElementById('tourOverlay');
     overlay.classList.remove('open');
     tourOpen = false;
+
+    // Restore floating professor FAB
+    document.getElementById('profFab').style.display = '';
+    document.getElementById('profWidget').style.display = '';
+    widgetOpen = false;
+    document.getElementById('profFab').classList.remove('hidden');
 }
 
 // ---------------------------------------------------------------------------
@@ -797,6 +808,8 @@ function copyCmd(btn) {
 function browseCurriculum() {
     closeTour();
     navigateTo('hardware');
+    // Open the chatbot so Professor NPU is available while browsing
+    if (!widgetOpen) toggleProfWidget();
 }
 
 // ---------------------------------------------------------------------------
@@ -881,7 +894,7 @@ const FAQ_DATABASE = [
 
     // Speech / Voice
     { patterns: ['speech to text', 'voice input', 'voice mode', 'how does voice work', 'speech recognition', 'stt', 'tts', 'text to speech'],
-      answer: '**Voice Mode** in NPUniversity uses the **Web Speech API** for on-device speech-to-text and text-to-speech:\n\n🎤 **Speech-to-Text (STT)**: Click the microphone button → speak → your words are transcribed and sent automatically\n🔊 **Text-to-Speech (TTS)**: Toggle the speaker icon → Professor NPU reads responses aloud\n\nBoth run **entirely on-device** — no cloud transcription service, no API costs. This aligns with the NPU philosophy: AI that works in airplane mode.\n\nReference: [Vibe Coding for the NPU](https://techcommunity.microsoft.com/blog/surfaceitpro/vibe-coding-for-the-npu/4497674) — building on-device AI apps on Copilot+ PCs.\n\n**Try this!** Click 🎤 below and ask a question by voice!' },
+      answer: '**Voice Mode** in NPUniversity uses **on-device Whisper** for speech-to-text and the **Web Speech API** for text-to-speech:\n\n🎤 **Speech-to-Text (STT)**: Click the microphone button → speak → click stop → your audio is transcribed on-device by Whisper and sent automatically\n🔊 **Text-to-Speech (TTS)**: Toggle the speaker icon → Professor NPU reads responses aloud\n\nBoth run **entirely on-device** — no cloud transcription service, no API costs. Whisper provides accurate, reliable transcription across all browsers.\n\n**Try this!** Click 🎤 below and ask a question by voice!' },
 
     // NPUniversity meta
     { patterns: ['what is npuniversity', 'what is this app', 'what is this', 'how to use this', 'help'],
@@ -1135,54 +1148,25 @@ function scrollWidgetChat() {
 }
 
 // ---------------------------------------------------------------------------
-// Voice Mode — Speech-to-Text (STT) & Text-to-Speech (TTS)
-// On-device via Web Speech API — no cloud transcription calls.
-// This approach aligns with the on-device AI philosophy described in
-// "Vibe Coding for the NPU" (https://techcommunity.microsoft.com/blog/surfaceitpro/vibe-coding-for-the-npu/4497674):
-// AI that works in airplane mode, zero API costs, data stays on-device.
+// Voice Mode — Speech-to-Text (STT) via on-device Whisper & Text-to-Speech (TTS)
+// Uses MediaRecorder → /api/transcribe (faster-whisper) for reliable dictation.
 // ---------------------------------------------------------------------------
 let voiceMode = false;
 let micListening = false;
-let recognition = null;
+let activeRecorder = null;
+let activeStream = null;
 
-// Initialize SpeechRecognition (on-device STT)
-function initSpeechRecognition() {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) return null;
+function getSupportedMime() {
+    const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'];
+    for (const t of types) { if (MediaRecorder.isTypeSupported(t)) return t; }
+    return '';
+}
 
-    const rec = new SpeechRecognition();
-    rec.continuous = false;
-    rec.interimResults = true;
-    rec.lang = 'en-US';
-
-    rec.onresult = (event) => {
-        const input = document.getElementById('profWidgetInput');
-        let transcript = '';
-        for (let i = 0; i < event.results.length; i++) {
-            transcript += event.results[i][0].transcript;
-        }
-        input.value = transcript;
-
-        // Auto-send on final result
-        if (event.results[event.results.length - 1].isFinal) {
-            stopMic();
-            sendWidgetMessage();
-        }
-    };
-
-    rec.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
-        stopMic();
-        if (event.error === 'not-allowed') {
-            appendWidgetMsg('professor', '⚠️ Microphone access denied. Please allow microphone permission to use voice input.');
-        }
-    };
-
-    rec.onend = () => {
-        stopMic();
-    };
-
-    return rec;
+function getExtForMime(mime) {
+    if (mime.includes('webm')) return '.webm';
+    if (mime.includes('ogg')) return '.ogg';
+    if (mime.includes('mp4')) return '.mp4';
+    return '.wav';
 }
 
 function toggleMic() {
@@ -1193,30 +1177,73 @@ function toggleMic() {
     }
 }
 
-function startMic() {
-    if (!recognition) {
-        recognition = initSpeechRecognition();
-    }
-    if (!recognition) {
-        appendWidgetMsg('professor', '⚠️ Speech recognition is not supported in this browser. Try Edge or Chrome.');
-        return;
-    }
-
+async function startMic() {
     // Ensure widget is open
     if (!widgetOpen) toggleProfWidget();
 
-    micListening = true;
     const btn = document.getElementById('profMicBtn');
-    btn.classList.add('listening');
-    btn.textContent = '⏹️';
-    btn.title = 'Stop listening';
 
     try {
-        recognition.start();
+        activeStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (e) {
-        // Already started
-        stopMic();
+        appendWidgetMsg('professor', '⚠️ Microphone access denied. Please allow microphone permission to use voice input.');
+        return;
     }
+
+    activeRecorder = new MediaRecorder(activeStream, { mimeType: getSupportedMime() });
+    const chunks = [];
+
+    activeRecorder.ondataavailable = (e) => { if (e.data.size > 0) chunks.push(e.data); };
+
+    activeRecorder.onstop = async () => {
+        btn.classList.remove('listening');
+        btn.textContent = '🎤';
+        btn.title = 'Voice input (speech-to-text)';
+        micListening = false;
+
+        if (activeStream) { activeStream.getTracks().forEach(t => t.stop()); activeStream = null; }
+
+        const blob = new Blob(chunks, { type: activeRecorder.mimeType });
+        activeRecorder = null;
+
+        // Show transcribing status
+        appendWidgetMsg('professor', '🎙️ Transcribing on-device...');
+
+        const formData = new FormData();
+        formData.append('audio', blob, 'recording' + getExtForMime(blob.type));
+
+        try {
+            const r = await fetch('/api/transcribe', { method: 'POST', body: formData });
+            const d = await r.json();
+
+            // Remove the "transcribing" message
+            const msgs = document.getElementById('profWidgetMessages');
+            const lastMsg = msgs.lastElementChild;
+            if (lastMsg && lastMsg.textContent.includes('Transcribing')) lastMsg.remove();
+
+            if (d.error) {
+                appendWidgetMsg('professor', '⚠️ ' + d.error);
+                return;
+            }
+            if (d.text && d.text.trim()) {
+                document.getElementById('profWidgetInput').value = d.text.trim();
+                sendWidgetMessage();
+            } else {
+                appendWidgetMsg('professor', '🎙️ No speech detected — try again.');
+            }
+        } catch (e) {
+            const msgs = document.getElementById('profWidgetMessages');
+            const lastMsg = msgs.lastElementChild;
+            if (lastMsg && lastMsg.textContent.includes('Transcribing')) lastMsg.remove();
+            appendWidgetMsg('professor', '⚠️ Transcription failed: ' + e.message);
+        }
+    };
+
+    activeRecorder.start();
+    micListening = true;
+    btn.classList.add('listening');
+    btn.textContent = '⏹️';
+    btn.title = 'Stop recording';
 }
 
 function stopMic() {
@@ -1226,8 +1253,12 @@ function stopMic() {
     btn.textContent = '🎤';
     btn.title = 'Voice input (speech-to-text)';
 
-    if (recognition) {
-        try { recognition.stop(); } catch {}
+    if (activeRecorder && activeRecorder.state !== 'inactive') {
+        activeRecorder.stop();
+    }
+    if (activeStream) {
+        activeStream.getTracks().forEach(t => t.stop());
+        activeStream = null;
     }
 }
 

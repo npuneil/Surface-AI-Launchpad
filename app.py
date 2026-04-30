@@ -8,12 +8,24 @@ import json
 import os
 import re
 import subprocess
+import tempfile
+import time
 import httpx
 from pathlib import Path
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi import FastAPI, Request, UploadFile, File
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
+
+# On-device speech-to-text via SpeechRecognition + pydub
+STT_SUPPORT = False
+try:
+    import speech_recognition as sr
+    from pydub import AudioSegment
+    STT_SUPPORT = True
+    print("[STARTUP] Speech recognition ready (SpeechRecognition + pydub)")
+except ImportError as exc:
+    print(f"[STARTUP] Speech recognition not available: {exc}")
 
 BASE_DIR = Path(__file__).resolve().parent
 
@@ -624,6 +636,54 @@ async def api_chat(request: Request):
             yield "data: [DONE]\n\n"
 
     return StreamingResponse(stream_response(), media_type="text/event-stream")
+
+
+@app.post("/api/transcribe")
+async def api_transcribe(audio: UploadFile = File(...)):
+    """Transcribe audio using on-device speech recognition."""
+    if not STT_SUPPORT:
+        return JSONResponse({"error": "Speech recognition not available — install SpeechRecognition and pydub"}, status_code=503)
+
+    tmp_path = None
+    wav_path = None
+    try:
+        suffix = Path(audio.filename).suffix if audio.filename else ".webm"
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+            tmp_path = tmp.name
+            content = await audio.read()
+            tmp.write(content)
+
+        # Convert to WAV for SpeechRecognition (handles webm, ogg, mp4, etc.)
+        wav_path = tmp_path + ".wav"
+        audio_seg = AudioSegment.from_file(tmp_path)
+        audio_seg.export(wav_path, format="wav")
+
+        t0 = time.perf_counter()
+        recognizer = sr.Recognizer()
+        with sr.AudioFile(wav_path) as source:
+            audio_data = recognizer.record(source)
+
+        text = recognizer.recognize_google(audio_data)
+        elapsed_ms = round((time.perf_counter() - t0) * 1000)
+
+        return {
+            "text": text,
+            "latency_ms": elapsed_ms,
+            "duration_s": round(len(audio_seg) / 1000, 1),
+        }
+    except sr.UnknownValueError:
+        return {"text": "", "latency_ms": 0, "duration_s": 0}
+    except sr.RequestError as exc:
+        return JSONResponse({"error": f"Speech recognition service error: {exc}"}, status_code=503)
+    except Exception as exc:
+        return JSONResponse({"error": f"Transcription failed: {exc}"}, status_code=500)
+    finally:
+        for p in (tmp_path, wav_path):
+            if p:
+                try:
+                    os.unlink(p)
+                except OSError:
+                    pass
 
 
 if __name__ == "__main__":
