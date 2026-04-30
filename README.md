@@ -1,6 +1,36 @@
 # NPUniversity — On-Device AI Learning Campus 🎓
 
+> ⚠️ **DEMO / SAMPLE CODE — NOT A PRODUCT.** NPUniversity is an experimental
+> prototype provided for educational and demonstration purposes only. It is
+> **not** a Microsoft product and is **not** supported, warranted, or
+> production-ready. See the [On-Device AI Prototypes & Sample Code](#on-device-ai-prototypes--sample-code)
+> section below for the full disclaimers — by downloading, installing, or
+> running the MSIX you accept those terms.
+
 A virtual campus for learning on-device AI concepts, guided by "Professor NPU" — an AI tutor that adapts lessons by skill level. Running entirely on the NPU (Neural Processing Unit) via Microsoft Foundry Local.
+
+## Download & Install (Windows 11, ARM64 / Snapdragon Copilot+ PC)
+
+The packaged MSIX is published as a GitHub Release:
+
+➡️ **[Download the latest MSIX from Releases](https://github.com/npuneil/NPUniversity/releases/latest)**
+
+Because this is a demo, the MSIX is **unsigned** and must be sideloaded:
+
+1. Enable Developer Mode (one-time): `Settings → System → For developers → Developer Mode = On`.
+2. Download `NPUniversity-<version>-arm64.msix` from the release page.
+3. Right-click the file → **Install**, or run:
+   ```powershell
+   Add-AppxPackage .\NPUniversity-1.0.0-arm64.msix
+   ```
+4. Launch **NPUniversity** from the Start menu. The first-run screen detects
+   your NPU and installs missing prerequisites (Foundry Local, Python 3.12,
+   VC++ runtime, an NPU-optimized Phi-4-mini model) via `winget`.
+
+> The MSIX, the bundled prerequisite installer, and the model it pulls are all
+> part of the demo. You are responsible for reviewing the third-party tools
+> being installed (Python, Foundry Local, VC++ runtime, model weights) and the
+> licenses they ship under before installing on a managed device.
 
 ## On-Device AI Prototypes & Sample Code
 
