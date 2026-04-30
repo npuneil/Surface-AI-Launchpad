@@ -1,9 +1,11 @@
 __pycache__/
 *.pyc
 .env
+.venv/
 
 NPUniversity.zip
 
 *.msix
+dist/
 NPUniversity.Desktop/bin/
 NPUniversity.Desktop/obj/

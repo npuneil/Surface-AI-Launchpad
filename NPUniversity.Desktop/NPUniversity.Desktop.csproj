@@ -20,6 +20,7 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.*" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.*" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.*" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
   </ItemGroup>
 
   <!-- Bundle the Python backend into the MSIX package -->

@@ -5,8 +5,60 @@
     Title="NPUniversity — Your On-Device AI Campus">
 
     <Grid>
+        <!-- Prerequisites checklist (first run / when something is missing) -->
+        <Grid x:Name="PrereqOverlay" Background="#0a0a0f" Visibility="Collapsed">
+            <Grid Margin="48" MaxWidth="900" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Spacing="6" Margin="0,0,0,16">
+                    <TextBlock Text="🎓 Welcome to NPUniversity"
+                               FontSize="28" FontWeight="SemiBold" Foreground="#e8e8f0"/>
+                    <TextBlock x:Name="PrereqSubtitle"
+                               Text="Let's make sure your PC has everything needed to run on-device AI."
+                               FontSize="14" Foreground="#9b9bbf"/>
+                </StackPanel>
+
+                <InfoBar Grid.Row="1" x:Name="PrereqBanner" IsOpen="True" IsClosable="False"
+                         Severity="Informational" Margin="0,0,0,12"
+                         Title="Hardware detected"
+                         Message="Checking your accelerator..." />
+
+                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="PrereqList" Spacing="10"/>
+                </ScrollViewer>
+
+                <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="12"
+                            HorizontalAlignment="Right" Margin="0,16,0,0">
+                    <HyperlinkButton x:Name="ShowLogsButton" Content="Show install logs"
+                                     Click="OnToggleLogs"/>
+                    <Button x:Name="RecheckButton" Content="Re-check"
+                            Click="OnRecheck"/>
+                    <Button x:Name="InstallAllButton" Content="Install missing"
+                            Style="{StaticResource AccentButtonStyle}"
+                            Click="OnInstallAll"/>
+                    <Button x:Name="ContinueButton" Content="Continue to NPUniversity"
+                            Style="{StaticResource AccentButtonStyle}"
+                            IsEnabled="False"
+                            Click="OnContinue"/>
+                </StackPanel>
+
+                <ScrollViewer Grid.Row="4" x:Name="LogScroller" Visibility="Collapsed"
+                              MaxHeight="160" Margin="0,12,0,0"
+                              Background="#10101a" Padding="10">
+                    <TextBlock x:Name="LogText" FontFamily="Consolas" FontSize="11"
+                               Foreground="#a8b8d0" TextWrapping="Wrap"/>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+
         <!-- Loading overlay shown while Python backend starts -->
-        <Grid x:Name="LoadingOverlay" Background="#0a0a0f">
+        <Grid x:Name="LoadingOverlay" Background="#0a0a0f" Visibility="Collapsed">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
                 <ProgressRing IsActive="True" Width="48" Height="48" />
                 <TextBlock Text="🎓 Starting NPUniversity..."

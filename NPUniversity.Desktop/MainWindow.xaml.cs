@@ -1,11 +1,16 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
+using NPUniversity.Desktop.Controls;
+using NPUniversity.Desktop.Services;
 
 namespace NPUniversity.Desktop;
 
@@ -15,6 +20,9 @@ public sealed partial class MainWindow : Window
     private const int ServerPort = 8099;
     private const string ServerUrl = "http://127.0.0.1:8099";
 
+    private readonly List<PrereqItem> _prereqs = new();
+    private readonly Dictionary<string, PrereqRow> _rows = new();
+
     public MainWindow()
     {
         this.InitializeComponent();
@@ -22,8 +30,156 @@ public sealed partial class MainWindow : Window
         this.AppWindow.Resize(new Windows.Graphics.SizeInt32(1400, 900));
 
         this.Closed += OnWindowClosed;
-        _ = StartBackendAndLoadAsync();
+        _ = RunFirstRunAsync();
     }
+
+    // ---------------- Prereq flow ----------------
+
+    private async Task RunFirstRunAsync()
+    {
+        PrereqOverlay.Visibility = Visibility.Visible;
+        LoadingOverlay.Visibility = Visibility.Collapsed;
+
+        _prereqs.Clear();
+        _prereqs.AddRange(Prerequisites.BuildList());
+
+        var vendor = Prerequisites.DetectNpuVendor();
+        PrereqBanner.Title = vendor switch
+        {
+            NpuVendor.Qualcomm => "Snapdragon NPU detected",
+            NpuVendor.Intel => "Intel Core Ultra NPU detected",
+            NpuVendor.AMD => "AMD Ryzen AI NPU detected",
+            _ => "No NPU detected"
+        };
+        PrereqBanner.Message = vendor == NpuVendor.None
+            ? "NPUniversity will run on CPU. For best performance use a Copilot+ PC."
+            : $"Foundry Local will accelerate models on the {vendor} NPU.";
+        PrereqBanner.Severity = vendor == NpuVendor.None
+            ? InfoBarSeverity.Warning
+            : InfoBarSeverity.Success;
+
+        PrereqList.Children.Clear();
+        _rows.Clear();
+        foreach (var item in _prereqs)
+        {
+            var row = new PrereqRow();
+            row.Bind(item);
+            row.ActionRequested += OnRowAction;
+            _rows[item.Id] = row;
+            PrereqList.Children.Add(row);
+        }
+
+        await CheckAllAsync();
+    }
+
+    private async Task CheckAllAsync()
+    {
+        var tasks = _prereqs.Select(async item =>
+        {
+            await Prerequisites.CheckAsync(item);
+            DispatcherQueue.TryEnqueue(() => _rows[item.Id].Refresh());
+        });
+        await Task.WhenAll(tasks);
+        UpdateContinueState();
+    }
+
+    private void UpdateContinueState()
+    {
+        bool requiredOk = _prereqs
+            .Where(p => p.Required)
+            .All(p => p.State == PrereqState.Installed || p.State == PrereqState.NotApplicable);
+        ContinueButton.IsEnabled = requiredOk;
+
+        bool anyMissing = _prereqs.Any(p => p.State == PrereqState.Missing && (p.WingetId != null || p.Id == "model"));
+        InstallAllButton.IsEnabled = anyMissing;
+    }
+
+    private async void OnRowAction(object? sender, PrereqItem item)
+    {
+        if (item.State == PrereqState.Installed)
+        {
+            await Prerequisites.CheckAsync(item);
+        }
+        else if (item.State == PrereqState.NotApplicable && item.DocsUrl != null)
+        {
+            OpenUrl(item.DocsUrl);
+            return;
+        }
+        else if (item.WingetId == null && item.Id != "model")
+        {
+            if (item.DocsUrl != null) OpenUrl(item.DocsUrl);
+            return;
+        }
+        else
+        {
+            await Prerequisites.InstallAsync(item, AppendLog);
+            await Prerequisites.CheckAsync(item);
+        }
+
+        _rows[item.Id].Refresh();
+        UpdateContinueState();
+    }
+
+    private async void OnInstallAll(object sender, RoutedEventArgs e)
+    {
+        InstallAllButton.IsEnabled = false;
+        ShowLogs();
+        foreach (var item in _prereqs.Where(p => p.State == PrereqState.Missing).ToList())
+        {
+            if (item.WingetId == null && item.Id != "model") continue;
+            DispatcherQueue.TryEnqueue(() => _rows[item.Id].Refresh());
+            await Prerequisites.InstallAsync(item, AppendLog);
+            await Prerequisites.CheckAsync(item);
+            DispatcherQueue.TryEnqueue(() => _rows[item.Id].Refresh());
+        }
+        UpdateContinueState();
+    }
+
+    private async void OnRecheck(object sender, RoutedEventArgs e)
+    {
+        foreach (var item in _prereqs)
+        {
+            item.State = PrereqState.Checking;
+            _rows[item.Id].Refresh();
+        }
+        await CheckAllAsync();
+    }
+
+    private void OnToggleLogs(object sender, RoutedEventArgs e)
+    {
+        LogScroller.Visibility = LogScroller.Visibility == Visibility.Visible
+            ? Visibility.Collapsed : Visibility.Visible;
+        ShowLogsButton.Content = LogScroller.Visibility == Visibility.Visible
+            ? "Hide install logs" : "Show install logs";
+    }
+
+    private void ShowLogs()
+    {
+        LogScroller.Visibility = Visibility.Visible;
+        ShowLogsButton.Content = "Hide install logs";
+    }
+
+    private void AppendLog(string line)
+    {
+        DispatcherQueue.TryEnqueue(() =>
+        {
+            LogText.Text += line + Environment.NewLine;
+        });
+    }
+
+    private static void OpenUrl(string url)
+    {
+        try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); } catch { }
+    }
+
+    private async void OnContinue(object sender, RoutedEventArgs e)
+    {
+        PrereqOverlay.Visibility = Visibility.Collapsed;
+        LoadingOverlay.Visibility = Visibility.Visible;
+        await StartBackendAndLoadAsync();
+    }
+
+    // ---------------- Backend + WebView ----------------
 
     private async Task StartBackendAndLoadAsync()
     {
@@ -67,12 +223,11 @@ public sealed partial class MainWindow : Window
 
     private static string? FindPython()
     {
-        // Try common Python executable names
-        foreach (var name in new[] { "python", "python3", "py" })
+        foreach (var name in new[] { "py", "python", "python3" })
         {
             try
             {
-                var psi = new ProcessStartInfo(name, "--version")
+                var psi = new ProcessStartInfo(name, name == "py" ? "-3 --version" : "--version")
                 {
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -94,7 +249,11 @@ public sealed partial class MainWindow : Window
         var reqFile = Path.Combine(backendDir, "requirements.txt");
         if (!File.Exists(reqFile)) return;
 
-        var psi = new ProcessStartInfo(pythonPath, $"-m pip install --quiet --disable-pip-version-check -r \"{reqFile}\"")
+        var args = pythonPath == "py"
+            ? $"-3 -m pip install --quiet --disable-pip-version-check -r \"{reqFile}\""
+            : $"-m pip install --quiet --disable-pip-version-check -r \"{reqFile}\"";
+
+        var psi = new ProcessStartInfo(pythonPath, args)
         {
             WorkingDirectory = backendDir,
             RedirectStandardOutput = true,
@@ -111,9 +270,12 @@ public sealed partial class MainWindow : Window
     private void StartPythonServer(string pythonPath)
     {
         var backendDir = GetBackendDir();
-        var appPy = Path.Combine(backendDir, "app.py");
+        var inlineScript = $"import uvicorn; import sys; sys.path.insert(0, r'{backendDir}'); from app import app; uvicorn.run(app, host='127.0.0.1', port={ServerPort})";
+        var args = pythonPath == "py"
+            ? $"-3 -u -c \"{inlineScript}\""
+            : $"-u -c \"{inlineScript}\"";
 
-        var psi = new ProcessStartInfo(pythonPath, $"-u -c \"import uvicorn; import sys; sys.path.insert(0, r'{backendDir}'); from app import app; uvicorn.run(app, host='127.0.0.1', port={ServerPort})\"")
+        var psi = new ProcessStartInfo(pythonPath, args)
         {
             WorkingDirectory = backendDir,
             UseShellExecute = false,
@@ -127,12 +289,10 @@ public sealed partial class MainWindow : Window
 
     private static string GetBackendDir()
     {
-        // When running from MSIX or output directory, backend files are in Assets\Backend
         var exeDir = AppContext.BaseDirectory;
         var backendDir = Path.Combine(exeDir, "Assets", "Backend");
         if (Directory.Exists(backendDir)) return backendDir;
 
-        // Fallback: development mode — files are in the repo root (two levels up from Desktop project)
         var repoRoot = Path.GetFullPath(Path.Combine(exeDir, "..", "..", "..", ".."));
         if (File.Exists(Path.Combine(repoRoot, "app.py"))) return repoRoot;
 
