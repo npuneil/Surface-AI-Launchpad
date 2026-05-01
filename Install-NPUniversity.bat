@@ -1,6 +1,7 @@
 @echo off
 :: NPUniversity One-Click Installer
-:: Right-click -> Run as administrator, OR just double-click (will self-elevate)
+:: Detects your silicon (Intel/AMD vs Snapdragon) and installs the right version.
+:: Double-click to run — it will self-elevate to admin if needed.
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :: Self-elevate if not admin
@@ -18,32 +19,26 @@ echo   NPUniversity Installer
 echo  ========================================
 echo.
 
-:: 1. Find the certificate
-set "CERT="
-for %%f in (*.cer) do set "CERT=%%f"
-if not defined CERT (
-    echo [ERROR] No .cer certificate file found in this folder.
-    echo         Re-download the zip from the Releases page.
-    pause
-    exit /b 1
+:: 1. Install signing certificate to Trusted People store
+echo [1/4] Installing certificate...
+if exist "%~dp0NPUniversity.cer" (
+    certutil -addstore TrustedPeople "%~dp0NPUniversity.cer" >nul 2>&1
+    echo       Done.
+) else (
+    echo       Certificate not found - install may fail.
 )
-echo [1/4] Trusting certificate: %CERT%
-certutil -addstore TrustedPeople "%CERT%" >nul 2>&1
-if %errorlevel% neq 0 (
-    echo        Trying alternate method...
-    powershell -Command "Import-Certificate -FilePath '%CERT%' -CertStoreLocation Cert:\LocalMachine\TrustedPeople" >nul 2>&1
-)
-echo       Done.
 
 :: 2. Detect architecture
 set "ARCH="
-if "%PROCESSOR_ARCHITECTURE%"=="ARM64" set "ARCH=arm64"
-if "%PROCESSOR_ARCHITECTURE%"=="AMD64" set "ARCH=x64"
-if "%PROCESSOR_ARCHITECTURE%"=="x86"   set "ARCH=x64"
-if not defined ARCH set "ARCH=x64"
-echo [2/4] Detected architecture: %ARCH%
+if "%PROCESSOR_ARCHITECTURE%"=="ARM64" (
+    set "ARCH=arm64"
+    echo [2/4] Detected: Snapdragon / ARM64
+) else (
+    set "ARCH=x64"
+    echo [2/4] Detected: Intel / AMD / x64
+)
 
-:: 3. Find and install the MSIX
+:: 3. Find and install the matching MSIX
 set "MSIX="
 for %%f in (*%ARCH%*.msix) do set "MSIX=%%f"
 if not defined MSIX (
@@ -60,8 +55,9 @@ echo [3/4] Installing: %MSIX%
 powershell -Command "Add-AppxPackage -Path '%MSIX%' -ForceApplicationShutdown" 2>nul
 if %errorlevel% neq 0 (
     echo.
-    echo [NOTE] If you see an error above, try enabling Developer Mode:
-    echo        Settings -^> System -^> For developers -^> Developer Mode = On
+    echo [NOTE] Install failed. Please ensure:
+    echo        1. Developer Mode is on: Settings -^> System -^> For developers
+    echo        2. You are running this as Administrator
     echo        Then run this installer again.
     pause
     exit /b 1
@@ -70,7 +66,8 @@ echo       Done.
 
 :: 4. Launch the app
 echo [4/4] Launching NPUniversity...
-powershell -Command "Start-Process 'shell:AppsFolder\NPUniversity_1.0.7.0_x64__8wekyb3d8bbwe!App'" 2>nul
+timeout /t 2 /nobreak >nul
+powershell -Command "Get-AppxPackage -Name '*NPUniversity*' | ForEach-Object { Start-Process ('shell:AppsFolder\' + $_.PackageFamilyName + '!App') }" 2>nul
 if %errorlevel% neq 0 (
     echo       Launch from Start menu: search for "NPUniversity"
 )
