@@ -30,31 +30,37 @@ except ImportError as exc:
 BASE_DIR = Path(__file__).resolve().parent
 
 
+async def _start_foundry_background():
+    """Start Foundry Local in the background — never blocks server startup."""
+    if os.environ.get("FOUNDRY_URL"):
+        return
+    if get_foundry_base_url():
+        print("\u2713 Foundry Local is already running")
+        return
+    print("\u23f3 Starting Foundry Local service (background)...")
+    try:
+        subprocess.Popen(
+            ["foundry", "service", "start"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        for _ in range(60):
+            await asyncio.sleep(1)
+            if get_foundry_base_url(force_refresh=True):
+                print("\u2713 Foundry Local started successfully")
+                return
+        print("\u26a0 Foundry Local did not respond within 60s \u2014 chat may be unavailable")
+    except FileNotFoundError:
+        print("\u26a0 'foundry' CLI not found \u2014 install Foundry Local to enable chat")
+    except Exception as e:
+        print(f"\u26a0 Could not start Foundry Local: {e}")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Auto-start Foundry Local on app startup."""
-    if not os.environ.get("FOUNDRY_URL"):
-        if get_foundry_base_url():
-            print("\u2713 Foundry Local is already running")
-        else:
-            print("\u23f3 Starting Foundry Local service...")
-            try:
-                subprocess.Popen(
-                    ["foundry", "service", "start"],
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
-                )
-                for _ in range(30):
-                    await asyncio.sleep(1)
-                    if get_foundry_base_url(force_refresh=True):
-                        print("\u2713 Foundry Local started successfully")
-                        break
-                else:
-                    print("\u26a0 Foundry Local did not respond within 30s \u2014 chat may be unavailable")
-            except FileNotFoundError:
-                print("\u26a0 'foundry' CLI not found \u2014 install Foundry Local to enable chat")
-            except Exception as e:
-                print(f"\u26a0 Could not start Foundry Local: {e}")
+    """Kick off Foundry Local startup as a background task so the server
+    starts accepting HTTP requests immediately."""
+    asyncio.create_task(_start_foundry_background())
     yield
 
 
@@ -79,23 +85,26 @@ def _run_ps(command: str, timeout: int = 15) -> str:
         return ""
 
 
+def _run_ps_all(commands: list[str], timeout: int = 15) -> list[str]:
+    """Run multiple PowerShell commands in parallel and return results."""
+    import concurrent.futures
+    def _exec(cmd):
+        return _run_ps(cmd, timeout=timeout)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(commands)) as pool:
+        return list(pool.map(_exec, commands))
+
+
 def detect_hardware() -> dict:
     """Detect CPU, GPU, and NPU on this Windows machine (cached)."""
     global _hw_cache
     if _hw_cache is not None:
         return _hw_cache
-    cpu_raw = _run_ps(
-        "Get-CimInstance Win32_Processor | Select-Object -ExpandProperty Name"
-    )
-    gpu_raw = _run_ps(
-        "Get-CimInstance Win32_VideoController | Select-Object -ExpandProperty Name"
-    )
-    npu_raw = _run_ps(
-        "pnputil /enum-devices /class ComputeAccelerator"
-    )
-    ram_raw = _run_ps(
-        "[math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1GB)"
-    )
+    cpu_raw, gpu_raw, npu_raw, ram_raw = _run_ps_all([
+        "Get-CimInstance Win32_Processor | Select-Object -ExpandProperty Name",
+        "Get-CimInstance Win32_VideoController | Select-Object -ExpandProperty Name",
+        "pnputil /enum-devices /class ComputeAccelerator",
+        "[math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1GB)",
+    ])
 
     # Parse NPU
     npu_name = None
@@ -482,6 +491,12 @@ def recommend_models(has_npu: bool, ram_gb: int, vendor: str = "") -> dict:
 # ---------------------------------------------------------------------------
 # API Endpoints
 # ---------------------------------------------------------------------------
+
+@app.get("/health")
+async def health():
+    """Lightweight health endpoint — responds instantly for WaitForServerAsync."""
+    return {"status": "ok"}
+
 
 @app.get("/", response_class=HTMLResponse)
 async def root():

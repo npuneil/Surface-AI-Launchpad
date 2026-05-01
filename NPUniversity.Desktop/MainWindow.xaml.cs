@@ -397,8 +397,9 @@ public sealed partial class MainWindow : Window
     private async Task<bool> WaitForServerAsync()
     {
         using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(2) };
-        // Allow up to 60s for first start (Foundry init can be slow on first run).
-        for (int i = 0; i < 60; i++)
+        var healthUrl = ServerUrl.TrimEnd('/') + "/health";
+        // Allow up to 120s for first start (Foundry init can be slow on Snapdragon).
+        for (int i = 0; i < 120; i++)
         {
             // Bail out fast if the Python process has already crashed.
             if (_pythonProcess != null && _pythonProcess.HasExited)
@@ -408,7 +409,7 @@ public sealed partial class MainWindow : Window
             }
             try
             {
-                var resp = await client.GetAsync(ServerUrl);
+                var resp = await client.GetAsync(healthUrl);
                 if (resp.IsSuccessStatusCode) return true;
             }
             catch { }
