@@ -9,7 +9,7 @@
   <Identity
     Name="NPUniversity"
     Publisher="CN=NPUniversity"
-    Version="1.0.4.0" />
+    Version="1.0.5.0" />
 
   <mp:PhoneIdentity PhoneProductId="b5e07a3e-1c4a-4b3d-8f2a-9c6d5e4f3a2b" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

@@ -290,7 +290,9 @@ public static class Prerequisites
             };
             using var p = Process.Start(psi);
             if (p == null) return false;
-            await p.WaitForExitAsync();
+            using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(10));
+            try { await p.WaitForExitAsync(cts.Token); }
+            catch (OperationCanceledException) { try { p.Kill(true); } catch { } return false; }
             return p.ExitCode == 0;
         }
         catch { return false; }
@@ -310,8 +312,14 @@ public static class Prerequisites
             };
             using var p = Process.Start(psi);
             if (p == null) return false;
-            var stdout = await p.StandardOutput.ReadToEndAsync();
-            await p.WaitForExitAsync();
+            using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(15));
+            string stdout;
+            try
+            {
+                stdout = await p.StandardOutput.ReadToEndAsync(cts.Token);
+                await p.WaitForExitAsync(cts.Token);
+            }
+            catch (OperationCanceledException) { try { p.Kill(true); } catch { } return false; }
             // If the user has any Phi-4 / Qwen / Llama variant cached, count it as ready.
             return Regex.IsMatch(stdout, @"(Phi-4|qwen|Llama|deepseek|mistral)", RegexOptions.IgnoreCase);
         }

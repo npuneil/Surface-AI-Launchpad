@@ -17,6 +17,7 @@ namespace NPUniversity.Desktop;
 public sealed partial class MainWindow : Window
 {
     private Process? _pythonProcess;
+    private readonly System.Text.StringBuilder _backendLog = new();
     private const int ServerPort = 8099;
     private const string ServerUrl = "http://127.0.0.1:8099";
 
@@ -194,8 +195,13 @@ public sealed partial class MainWindow : Window
                 return;
             }
 
-            UpdateStatus("Installing dependencies...");
-            await InstallDependenciesAsync(pythonPath);
+            // Skip pip install if the backend already imports cleanly — saves ~10s on every cold start.
+            UpdateStatus("Checking dependencies...");
+            if (!await BackendImportsOkAsync(pythonPath))
+            {
+                UpdateStatus("Installing dependencies (first run)...");
+                await InstallDependenciesAsync(pythonPath);
+            }
 
             UpdateStatus("Starting backend server...");
             StartPythonServer(pythonPath);
@@ -204,7 +210,8 @@ public sealed partial class MainWindow : Window
             var ready = await WaitForServerAsync();
             if (!ready)
             {
-                UpdateStatus("Server failed to start. Check Python and dependencies.");
+                var tail = GetBackendLogTail(800);
+                UpdateStatus("Server failed to start.\n" + (string.IsNullOrWhiteSpace(tail) ? "No output captured." : tail));
                 return;
             }
 
@@ -224,6 +231,7 @@ public sealed partial class MainWindow : Window
 
     private static string? FindPython()
     {
+        // First try PATH-resolvable launchers.
         foreach (var name in new[] { "py", "python", "python3" })
         {
             try
@@ -241,7 +249,56 @@ public sealed partial class MainWindow : Window
             }
             catch { }
         }
+
+        // Fallback: scan common install locations. Useful immediately after a winget
+        // install when this process's PATH hasn't been refreshed yet.
+        string[] roots =
+        {
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Programs\Python",
+            @"C:\Program Files\Python",
+            @"C:\Python"
+        };
+        foreach (var root in roots)
+        {
+            if (!Directory.Exists(root)) continue;
+            try
+            {
+                var hits = Directory.EnumerateFiles(root, "python.exe", SearchOption.AllDirectories);
+                foreach (var path in hits)
+                {
+                    if (path.Contains("Scripts", StringComparison.OrdinalIgnoreCase)) continue;
+                    return path;
+                }
+            }
+            catch { }
+        }
         return null;
+    }
+
+    private static async Task<bool> BackendImportsOkAsync(string pythonPath)
+    {
+        var backendDir = GetBackendDir();
+        if (!File.Exists(Path.Combine(backendDir, "app.py"))) return false;
+        var probe = $"import sys; sys.path.insert(0, r'{backendDir}'); import app";
+        var args = pythonPath == "py" ? $"-3 -c \"{probe}\"" : $"-c \"{probe}\"";
+        try
+        {
+            var psi = new ProcessStartInfo(pythonPath, args)
+            {
+                WorkingDirectory = backendDir,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            using var p = Process.Start(psi);
+            if (p == null) return false;
+            using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(15));
+            try { await p.WaitForExitAsync(cts.Token); }
+            catch (OperationCanceledException) { try { p.Kill(true); } catch { } return false; }
+            return p.ExitCode == 0;
+        }
+        catch { return false; }
     }
 
     private async Task InstallDependenciesAsync(string pythonPath)
@@ -286,6 +343,36 @@ public sealed partial class MainWindow : Window
         };
 
         _pythonProcess = Process.Start(psi);
+        if (_pythonProcess != null)
+        {
+            // Drain stdout/stderr to a ring buffer so we can surface diagnostics on failure.
+            // Without these the Python process would block once the OS pipe buffer fills (~4 KB).
+            _pythonProcess.OutputDataReceived += (_, e) => AppendBackendLog(e.Data);
+            _pythonProcess.ErrorDataReceived += (_, e) => AppendBackendLog(e.Data);
+            _pythonProcess.BeginOutputReadLine();
+            _pythonProcess.BeginErrorReadLine();
+        }
+    }
+
+    private void AppendBackendLog(string? line)
+    {
+        if (string.IsNullOrEmpty(line)) return;
+        lock (_backendLog)
+        {
+            _backendLog.AppendLine(line);
+            // Cap at ~16 KB to avoid unbounded growth.
+            if (_backendLog.Length > 16384)
+                _backendLog.Remove(0, _backendLog.Length - 16384);
+        }
+    }
+
+    private string GetBackendLogTail(int maxChars)
+    {
+        lock (_backendLog)
+        {
+            var s = _backendLog.ToString();
+            return s.Length <= maxChars ? s : s.Substring(s.Length - maxChars);
+        }
     }
 
     private static string GetBackendDir()
@@ -300,11 +387,18 @@ public sealed partial class MainWindow : Window
         return backendDir;
     }
 
-    private static async Task<bool> WaitForServerAsync()
+    private async Task<bool> WaitForServerAsync()
     {
-        using var client = new HttpClient();
-        for (int i = 0; i < 30; i++)
+        using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(2) };
+        // Allow up to 60s for first start (Foundry init can be slow on first run).
+        for (int i = 0; i < 60; i++)
         {
+            // Bail out fast if the Python process has already crashed.
+            if (_pythonProcess != null && _pythonProcess.HasExited)
+            {
+                AppendBackendLog($"[backend exited with code {_pythonProcess.ExitCode}]");
+                return false;
+            }
             try
             {
                 var resp = await client.GetAsync(ServerUrl);
