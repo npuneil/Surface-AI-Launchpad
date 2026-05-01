@@ -15,11 +15,11 @@ Not sure which one you have? Press `Windows + Pause/Break` (or open **Settings �
 
 ## Step 2 — Unzip and run the installer
 
-1. **Right-click the downloaded `.zip`** → **Extract All...** → click **Extract**.
-2. Open the extracted folder. You'll see four files — you only need to use one of them:
+1. **Right-click the downloaded `.zip`** → **Extract All…** → click **Extract**.
+2. Open the extracted folder.
 3. **Double-click `Install-NPUniversity.bat`**.
-4. Click **Yes** when Windows asks for permission. (This is needed once, to trust the app's signing certificate — like installing any new desktop app.)
-5. The installer will finish in about 10 seconds and launch NPUniversity automatically.
+4. Click **Yes** when Windows asks for permission (one-time, to trust the signing certificate).
+5. Wait ~10 seconds — the installer will finish and launch NPUniversity automatically.
 
 That's it. NPUniversity is now in your Start menu — just type "NPUniversity" any time you want to launch it.
 
