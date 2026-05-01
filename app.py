@@ -17,24 +17,36 @@ from fastapi import FastAPI, Request, UploadFile, File
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 
-# On-device speech-to-text via SpeechRecognition + pydub
-STT_SUPPORT = False
-try:
-    import speech_recognition as sr
-    from pydub import AudioSegment
-    STT_SUPPORT = True
-    print("[STARTUP] Speech recognition ready (SpeechRecognition + pydub)")
-except ImportError as exc:
-    print(f"[STARTUP] Speech recognition not available: {exc}")
+# Lazy-load speech-to-text so slow imports don't block server startup
+STT_SUPPORT: bool | None = None  # None = not checked yet
+sr = None  # type: ignore
+AudioSegment = None  # type: ignore
+
+def _ensure_stt():
+    """Lazy-load SpeechRecognition + pydub on first use."""
+    global STT_SUPPORT, sr, AudioSegment
+    if STT_SUPPORT is not None:
+        return STT_SUPPORT
+    try:
+        import speech_recognition as _sr
+        from pydub import AudioSegment as _AudioSegment
+        sr = _sr
+        AudioSegment = _AudioSegment
+        STT_SUPPORT = True
+    except ImportError:
+        STT_SUPPORT = False
+    return STT_SUPPORT
 
 BASE_DIR = Path(__file__).resolve().parent
 
 
 async def _start_foundry_background():
-    """Start Foundry Local in the background — never blocks server startup."""
+    """Start Foundry Local in background — ALL sync calls via to_thread() to
+    avoid blocking the event loop (which would prevent /health from responding)."""
     if os.environ.get("FOUNDRY_URL"):
         return
-    if get_foundry_base_url():
+    url = await asyncio.to_thread(get_foundry_base_url)
+    if url:
         print("\u2713 Foundry Local is already running")
         return
     print("\u23f3 Starting Foundry Local service (background)...")
@@ -44,12 +56,16 @@ async def _start_foundry_background():
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
-        for _ in range(60):
-            await asyncio.sleep(1)
-            if get_foundry_base_url(force_refresh=True):
+        # Poll with a real deadline; use cheap health-check, not full CLI discovery
+        import time as _time
+        deadline = _time.monotonic() + 90
+        while _time.monotonic() < deadline:
+            await asyncio.sleep(2)
+            url = await asyncio.to_thread(get_foundry_base_url, True)
+            if url:
                 print("\u2713 Foundry Local started successfully")
                 return
-        print("\u26a0 Foundry Local did not respond within 60s \u2014 chat may be unavailable")
+        print("\u26a0 Foundry Local did not respond within 90s \u2014 chat may be unavailable")
     except FileNotFoundError:
         print("\u26a0 'foundry' CLI not found \u2014 install Foundry Local to enable chat")
     except Exception as e:
@@ -505,37 +521,34 @@ async def root():
 
 
 @app.get("/api/hardware")
-async def api_hardware():
+def api_hardware():
     hw = detect_hardware()
     return hw
 
 
 @app.get("/api/models")
-async def api_models():
+def api_models():
     hw = detect_hardware()
     recs = recommend_models(hw["summary"]["has_npu"], hw["ram_gb"], hw["summary"]["silicon_vendor"])
     return {"hardware": hw, "recommendations": recs}
 
 
 @app.get("/api/foundry/status")
-async def api_foundry_status():
+def api_foundry_status():
     base = get_foundry_base_url()
     if not base:
         return {"status": "offline", "url": None}
     try:
-        async with httpx.AsyncClient(timeout=5) as client:
-            r = await client.get(f"{base}/v1/models")
-            models = r.json().get("data", [])
-            return {"status": "online", "url": base, "loaded_models": [m["id"] for m in models]}
+        r = httpx.get(f"{base}/v1/models", timeout=5)
+        models = r.json().get("data", [])
+        return {"status": "online", "url": base, "loaded_models": [m["id"] for m in models]}
     except Exception:
-        # URL from cache may be stale — force refresh and retry once
         base2 = get_foundry_base_url(force_refresh=True)
         if base2:
             try:
-                async with httpx.AsyncClient(timeout=5) as client:
-                    r = await client.get(f"{base2}/v1/models")
-                    models = r.json().get("data", [])
-                    return {"status": "online", "url": base2, "loaded_models": [m["id"] for m in models]}
+                r = httpx.get(f"{base2}/v1/models", timeout=5)
+                models = r.json().get("data", [])
+                return {"status": "online", "url": base2, "loaded_models": [m["id"] for m in models]}
             except Exception:
                 pass
         return {"status": "error", "url": base}
@@ -588,7 +601,7 @@ async def api_chat(request: Request):
     if not messages or not any(m.get("content", "").strip() for m in messages if m.get("role") == "user"):
         return {"error": "No message content provided"}
 
-    base = get_foundry_base_url()
+    base = await asyncio.to_thread(get_foundry_base_url)
     if not base:
         return {"error": "Foundry Local service not running. Start it with: foundry service start"}
 
@@ -654,9 +667,9 @@ async def api_chat(request: Request):
 
 
 @app.post("/api/transcribe")
-async def api_transcribe(audio: UploadFile = File(...)):
-    """Transcribe audio using on-device speech recognition."""
-    if not STT_SUPPORT:
+def api_transcribe(audio: UploadFile = File(...)):
+    """Transcribe audio using on-device speech recognition (runs in thread pool)."""
+    if not _ensure_stt():
         return JSONResponse({"error": "Speech recognition not available — install SpeechRecognition and pydub"}, status_code=503)
 
     tmp_path = None
@@ -665,7 +678,7 @@ async def api_transcribe(audio: UploadFile = File(...)):
         suffix = Path(audio.filename).suffix if audio.filename else ".webm"
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             tmp_path = tmp.name
-            content = await audio.read()
+            content = audio.file.read()
             tmp.write(content)
 
         # Convert to WAV for SpeechRecognition (handles webm, ogg, mp4, etc.)
