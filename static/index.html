@@ -355,7 +355,7 @@
                         <div class="step-number">1</div>
                         <div class="step-content">
                             <h4>Install via winget</h4>
-                            <p>Open a terminal and run:</p>
+                            <p>Open a terminal (press <strong>Win + X</strong> → <strong>Terminal</strong>, or search for <em>PowerShell</em> or <em>Command Prompt</em>) and run:</p>
                             <div class="cmd-block">winget install Microsoft.FoundryLocal<button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
                         </div>
                     </div>
@@ -395,8 +395,9 @@
                 </div>
                 <p style="font-size:14px;color:var(--text-dim);margin-bottom:16px;">
                     Foundry Local exposes an OpenAI-compatible API. Use it with the OpenAI Python SDK, curl, or any HTTP client.
-                    The service URL has a dynamic port — discover it with <code>foundry service status</code>.
+                    The service URL has a dynamic port — discover it by pasting the following command in your terminal:
                 </p>
+                <div class="cmd-block" style="margin-bottom:16px;">foundry service status<button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
                 <div class="feature-steps">
                     <div class="step-card">
                         <div class="step-number">Py</div>
