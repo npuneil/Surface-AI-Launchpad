@@ -291,6 +291,8 @@ public sealed partial class MainWindow : Window
                 UseShellExecute = false,
                 CreateNoWindow = true
             };
+            psi.EnvironmentVariables["PYTHONIOENCODING"] = "utf-8";
+            psi.EnvironmentVariables["PYTHONUTF8"] = "1";
             using var p = Process.Start(psi);
             if (p == null) return false;
             using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(15));
@@ -319,6 +321,8 @@ public sealed partial class MainWindow : Window
             UseShellExecute = false,
             CreateNoWindow = true
         };
+        psi.EnvironmentVariables["PYTHONIOENCODING"] = "utf-8";
+        psi.EnvironmentVariables["PYTHONUTF8"] = "1";
 
         using var proc = Process.Start(psi);
         if (proc != null)
@@ -341,6 +345,9 @@ public sealed partial class MainWindow : Window
             RedirectStandardOutput = true,
             RedirectStandardError = true
         };
+        // Force UTF-8 on the Python child so prints like ✓ / emoji don't crash on cp1252 systems.
+        psi.EnvironmentVariables["PYTHONIOENCODING"] = "utf-8";
+        psi.EnvironmentVariables["PYTHONUTF8"] = "1";
 
         _pythonProcess = Process.Start(psi);
         if (_pythonProcess != null)
