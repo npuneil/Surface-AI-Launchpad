@@ -11,6 +11,9 @@
 <div class="demo-banner">⚠️ Demo Purposes Only</div>
 
 <div class="app-shell">
+    <!-- Hamburger toggle -->
+    <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">☰</button>
+
     <!-- Sidebar -->
     <nav class="sidebar">
         <div class="sidebar-brand">
@@ -32,30 +35,45 @@
             <span class="nav-icon">🧰</span> AI Toolkit
         </div>
 
-        <div class="nav-section-label nav-section-collapsible" onclick="toggleNavSection(this)">
+        <div class="nav-section-label nav-section-collapsible open" onclick="toggleNavSection(this)">
             <span>NPU Value</span><span class="nav-section-arrow">▸</span>
         </div>
-        <div class="nav-section-items">
-            <div class="nav-subsection-label">Built In</div>
-            <div class="nav-item" data-page="recall" onclick="navigateTo('recall')">
-                <span class="nav-icon">🔄</span> Recall
+        <div class="nav-section-items open">
+            <div class="nav-subsection-label nav-subsection-collapsible" onclick="toggleNavSubsection(this)">
+                <span>Built In</span><span class="nav-subsection-arrow">▸</span>
             </div>
-            <div class="nav-item" data-page="clicktodo" onclick="navigateTo('clicktodo')">
-                <span class="nav-icon">👆</span> Click to Do
+            <div class="nav-subsection-items">
+                <div class="nav-item" data-page="recall" onclick="navigateTo('recall')">
+                    <span class="nav-icon">🔄</span> Recall
+                </div>
+                <div class="nav-item" data-page="clicktodo" onclick="navigateTo('clicktodo')">
+                    <span class="nav-icon">👆</span> Click to Do
+                </div>
+                <div class="nav-item" data-page="semanticsearch" onclick="navigateTo('semanticsearch')">
+                    <span class="nav-icon">🔎</span> Semantic Search
+                </div>
+                <div class="nav-item" data-page="superres" onclick="navigateTo('superres')">
+                    <span class="nav-icon">✨</span> Super Resolution
+                </div>
             </div>
-            <div class="nav-item" data-page="semanticsearch" onclick="navigateTo('semanticsearch')">
-                <span class="nav-icon">🔎</span> Semantic Search
+            <div class="nav-subsection-label nav-subsection-collapsible" onclick="toggleNavSubsection(this)">
+                <span>Bolt On</span><span class="nav-subsection-arrow">▸</span>
             </div>
-            <div class="nav-item" data-page="superres" onclick="navigateTo('superres')">
-                <span class="nav-icon">✨</span> Super Resolution
+            <div class="nav-subsection-items">
+                <div class="nav-item" data-page="bolton" onclick="navigateTo('bolton')">
+                    <span class="nav-icon">🔌</span> ISV NPU Apps
+                </div>
             </div>
-            <div class="nav-subsection-label">Bolt On</div>
-            <div class="nav-item" data-page="bolton" onclick="navigateTo('bolton')">
-                <span class="nav-icon">🔌</span> ISV NPU Apps
+            <div class="nav-subsection-label nav-subsection-collapsible" onclick="toggleNavSubsection(this)">
+                <span>Build Your Own</span><span class="nav-subsection-arrow">▸</span>
             </div>
-            <div class="nav-subsection-label">Build Your Own</div>
-            <div class="nav-item" data-page="buildyourown" onclick="navigateTo('buildyourown')">
-                <span class="nav-icon">🏗️</span> Industry Scenarios
+            <div class="nav-subsection-items">
+                <div class="nav-item" data-page="buildyourown" onclick="navigateTo('buildyourown')">
+                    <span class="nav-icon">🏗️</span> Industry Scenarios
+                </div>
+                <div class="nav-item" data-page="usecasebuilder" onclick="navigateTo('usecasebuilder')">
+                    <span class="nav-icon">⚡</span> Use Case Builder
+                </div>
             </div>
         </div>
 
@@ -95,6 +113,15 @@
             </div>
             <div class="nav-item" data-page="hybridai" onclick="navigateTo('hybridai')">
                 <span class="nav-icon">🔀</span> Hybrid AI
+            </div>
+        </div>
+
+        <div class="nav-section-label nav-section-collapsible" onclick="toggleNavSection(this)">
+            <span>Engage</span><span class="nav-section-arrow">▸</span>
+        </div>
+        <div class="nav-section-items">
+            <div class="nav-item" data-page="workshops" onclick="navigateTo('workshops')">
+                <span class="nav-icon">🚀</span> Workshops & Kickstarters
             </div>
         </div>
 
@@ -2307,182 +2334,218 @@ print(f"Edge coherence:    {results['coherence']:.2f}")</pre></div>
                    on-device AI patterns apply across different industries — each based on working prototypes.</p>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">💰</div>
-                    <div><h3>Financial Services — Data Preparation</h3><div class="card-subtitle">On-device AI for sensitive financial data processing</div></div>
-                </div>
-                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
-                    Financial institutions handle highly sensitive fund data, portfolio reports, and market documents that cannot leave 
-                    the device due to compliance requirements. An NPU-powered data preparation assistant captures, extracts, normalizes, 
-                    and exports financial entities — entirely on-device.
-                </p>
-                <table class="capability-table">
-                    <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
-                    <tbody>
-                        <tr><td><strong>Document Capture</strong></td><td>Fetch web pages or ingest PDFs — all parsing happens locally on the device</td></tr>
-                        <tr><td><strong>Entity Extraction</strong></td><td>NPU-accelerated ML models identify tickers, ISINs, NAVs, returns, and risk metrics with confidence scoring</td></tr>
-                        <tr><td><strong>Schema Mapping</strong></td><td>AI maps extracted entities to target schemas (e.g., Security Master) with coverage analysis across 12+ categories</td></tr>
-                        <tr><td><strong>Data Provenance</strong></td><td>Full lineage tracking from source → extraction → normalization → export for audit compliance</td></tr>
-                    </tbody>
-                </table>
-                <div class="info-box tip">
-                    <strong>Why NPU matters here:</strong> Financial data is subject to strict regulatory requirements (SEC, FINRA, MiFID II). 
-                    Processing on the NPU means proprietary fund data, pricing models, and portfolio compositions never leave the device — 
-                    no cloud APIs, no third-party data processors, zero exposure risk.
-                    <br><br>
-                    <a href="https://github.com/npuneil/Data-Prep-Demo" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+            <!-- Industry Pill Grid -->
+            <div id="industry-pills" class="industry-pill-grid">
+                <button class="industry-pill" onclick="showIndustryDetail('financial')" style="--pill-color: var(--blue)">💰 Financial Services</button>
+                <button class="industry-pill" onclick="showIndustryDetail('insurance')" style="--pill-color: var(--green)">🏥 Insurance</button>
+                <button class="industry-pill" onclick="showIndustryDetail('professional')" style="--pill-color: var(--accent)">👔 Professional Services</button>
+                <button class="industry-pill" onclick="showIndustryDetail('energy')" style="--pill-color: var(--amber, #f59e0b)">⚡ Energy &amp; Utilities</button>
+                <button class="industry-pill" onclick="showIndustryDetail('retail')" style="--pill-color: var(--purple)">🤖 Retail &amp; Hospitality</button>
+                <button class="industry-pill" onclick="showIndustryDetail('media')" style="--pill-color: var(--red, #ff6b6b)">🛡️ Media &amp; Communications</button>
+                <button class="industry-pill" onclick="showIndustryDetail('architecture')" style="--pill-color: var(--green)">🔧 Architecture Pattern</button>
+            </div>
+
+            <!-- Back button (hidden by default) -->
+            <button id="industry-back-btn" class="industry-back-btn" style="display:none" onclick="showIndustryPills()">
+                ← Back to Industries
+            </button>
+
+            <!-- Financial Services Detail -->
+            <div class="industry-detail" id="detail-financial" style="display:none">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">💰</div>
+                        <div><h3>Financial Services — Data Preparation</h3><div class="card-subtitle">On-device AI for sensitive financial data processing</div></div>
+                    </div>
+                    <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                        Financial institutions handle highly sensitive fund data, portfolio reports, and market documents that cannot leave 
+                        the device due to compliance requirements. An NPU-powered data preparation assistant captures, extracts, normalizes, 
+                        and exports financial entities — entirely on-device.
+                    </p>
+                    <table class="capability-table">
+                        <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Document Capture</strong></td><td>Fetch web pages or ingest PDFs — all parsing happens locally on the device</td></tr>
+                            <tr><td><strong>Entity Extraction</strong></td><td>NPU-accelerated ML models identify tickers, ISINs, NAVs, returns, and risk metrics with confidence scoring</td></tr>
+                            <tr><td><strong>Schema Mapping</strong></td><td>AI maps extracted entities to target schemas (e.g., Security Master) with coverage analysis across 12+ categories</td></tr>
+                            <tr><td><strong>Data Provenance</strong></td><td>Full lineage tracking from source → extraction → normalization → export for audit compliance</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="info-box tip">
+                        <strong>Why NPU matters here:</strong> Financial data is subject to strict regulatory requirements (SEC, FINRA, MiFID II). 
+                        Processing on the NPU means proprietary fund data, pricing models, and portfolio compositions never leave the device — 
+                        no cloud APIs, no third-party data processors, zero exposure risk.
+                        <br><br>
+                        <a href="https://github.com/npuneil/Data-Prep-Demo" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🏥</div>
-                    <div><h3>Insurance — Claims Processing</h3><div class="card-subtitle">AI-powered claims analysis at the point of service</div></div>
-                </div>
-                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
-                    Insurance adjusters in the field need to analyze claims documents, photos, and forms on the spot — often 
-                    in locations with no connectivity. An NPU-powered claims processor ingests documents, extracts 
-                    key information, assesses damage, and generates structured reports — all on-device.
-                </p>
-                <table class="capability-table">
-                    <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
-                    <tbody>
-                        <tr><td><strong>Document Ingestion</strong></td><td>OCR and parsing of claims forms, medical records, and repair estimates locally on the NPU</td></tr>
-                        <tr><td><strong>Damage Assessment</strong></td><td>Vision models running on NPU analyze property/vehicle photos for damage classification</td></tr>
-                        <tr><td><strong>Fraud Signals</strong></td><td>Local AI identifies inconsistencies between reported damage, photos, and documentation patterns</td></tr>
-                        <tr><td><strong>Report Generation</strong></td><td>SLM on NPU generates structured adjuster reports with extracted evidence and recommendations</td></tr>
-                    </tbody>
-                </table>
-                <div class="info-box tip">
-                    <strong>Why NPU matters here:</strong> Claims data includes personal medical information (PHI), financial details, and photographic 
-                    evidence. Field adjusters often work at disaster sites with no cell coverage. NPU processing means the adjuster can complete 
-                    full assessments offline, with data protected under HIPAA and state privacy regulations.
-                    <br><br>
-                    <a href="https://github.com/npuneil/Insurance-NPU-Prototype" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">👔</div>
-                    <div><h3>Professional Services — Remote Hiring</h3><div class="card-subtitle">On-device AI for secure candidate screening and interviews</div></div>
-                </div>
-                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
-                    Professional services firms conducting remote hiring need to process resumes, verify identity documents, 
-                    and run structured interviews — all while protecting candidate PII. An NPU-powered hiring assistant 
-                    handles the full workflow without sending any candidate data to cloud services.
-                </p>
-                <table class="capability-table">
-                    <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
-                    <tbody>
-                        <tr><td><strong>Resume Analysis</strong></td><td>SLM on NPU extracts skills, experience, certifications and matches against job requirements</td></tr>
-                        <tr><td><strong>ID Verification</strong></td><td>Vision models on NPU scan and validate government-issued IDs, detecting tampering or inconsistencies</td></tr>
-                        <tr><td><strong>Interview Engine</strong></td><td>AI-generated structured interview questions based on role and resume analysis, with real-time follow-ups</td></tr>
-                        <tr><td><strong>Candidate Scoring</strong></td><td>On-device model generates structured evaluation reports with skill-match percentages</td></tr>
-                    </tbody>
-                </table>
-                <div class="info-box tip">
-                    <strong>Why NPU matters here:</strong> Candidate resumes, identity documents, and interview recordings contain highly sensitive PII. 
-                    In many jurisdictions (EU GDPR, US state privacy laws), processing biometric data and personal information 
-                    requires explicit controls. NPU-local processing eliminates third-party data processor agreements entirely.
-                    <br><br>
-                    <a href="https://github.com/npuneil/Remote-Hiring-NPU-Demo" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+            <!-- Insurance Detail -->
+            <div class="industry-detail" id="detail-insurance" style="display:none">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🏥</div>
+                        <div><h3>Insurance — Claims Processing</h3><div class="card-subtitle">AI-powered claims analysis at the point of service</div></div>
+                    </div>
+                    <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                        Insurance adjusters in the field need to analyze claims documents, photos, and forms on the spot — often 
+                        in locations with no connectivity. An NPU-powered claims processor ingests documents, extracts 
+                        key information, assesses damage, and generates structured reports — all on-device.
+                    </p>
+                    <table class="capability-table">
+                        <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Document Ingestion</strong></td><td>OCR and parsing of claims forms, medical records, and repair estimates locally on the NPU</td></tr>
+                            <tr><td><strong>Damage Assessment</strong></td><td>Vision models running on NPU analyze property/vehicle photos for damage classification</td></tr>
+                            <tr><td><strong>Fraud Signals</strong></td><td>Local AI identifies inconsistencies between reported damage, photos, and documentation patterns</td></tr>
+                            <tr><td><strong>Report Generation</strong></td><td>SLM on NPU generates structured adjuster reports with extracted evidence and recommendations</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="info-box tip">
+                        <strong>Why NPU matters here:</strong> Claims data includes personal medical information (PHI), financial details, and photographic 
+                        evidence. Field adjusters often work at disaster sites with no cell coverage. NPU processing means the adjuster can complete 
+                        full assessments offline, with data protected under HIPAA and state privacy regulations.
+                        <br><br>
+                        <a href="https://github.com/npuneil/Insurance-NPU-Prototype" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon" style="background:var(--amber-dim);color:var(--amber)">⚡</div>
-                    <div><h3>Energy &amp; Utilities — Field Worker Assistant</h3><div class="card-subtitle">AI-powered field operations in connectivity-challenged environments</div></div>
-                </div>
-                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
-                    Energy field workers operate at remote substations, pipelines, and generation facilities — often 
-                    with zero connectivity. An NPU-powered field assistant provides AI-driven equipment diagnostics, 
-                    safety procedure guidance, and reporting — all running locally on a Copilot+ PC.
-                </p>
-                <table class="capability-table">
-                    <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
-                    <tbody>
-                        <tr><td><strong>Equipment Diagnostics</strong></td><td>Vision models on NPU analyze photos of equipment, gauges, and infrastructure for anomaly detection</td></tr>
-                        <tr><td><strong>Procedure Guidance</strong></td><td>SLM provides step-by-step maintenance procedures, safety checklists, and troubleshooting guidance</td></tr>
-                        <tr><td><strong>Voice Interaction</strong></td><td>NPU-powered speech-to-text allows hands-free operation while working on equipment</td></tr>
-                        <tr><td><strong>Incident Reporting</strong></td><td>Auto-generate structured incident reports from voice notes, photos, and sensor readings</td></tr>
-                    </tbody>
-                </table>
-                <div class="info-box tip">
-                    <strong>Why NPU matters here:</strong> Remote energy sites (oil platforms, wind farms, substations) often have no cellular or 
-                    Wi-Fi connectivity. NPU processing ensures the field worker has a fully capable AI assistant regardless of location. 
-                    When connectivity returns, reports sync automatically. Battery efficiency of the NPU means all-day operation in the field.
-                    <br><br>
-                    <a href="https://github.com/npuneil/Energy-Field-Worker-NPU-Prototype" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🤖</div>
-                    <div><h3>Retail &amp; Hospitality — AI Avatar Kiosk</h3><div class="card-subtitle">Interactive AI concierge powered entirely by on-device inference</div></div>
-                </div>
-                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
-                    Retail stores, hotel lobbies, and event venues can deploy AI-powered avatar kiosks that interact 
-                    with customers via voice and visual conversation — with no cloud dependency. The kiosk runs 
-                    speech recognition (Whisper) and language models (TinyLlama) entirely on the NPU.
-                </p>
-                <table class="capability-table">
-                    <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
-                    <tbody>
-                        <tr><td><strong>Voice Input</strong></td><td>Whisper speech-to-text model running on NPU converts customer speech to text in real time</td></tr>
-                        <tr><td><strong>AI Conversation</strong></td><td>TinyLlama SLM on NPU generates contextual, helpful responses — product info, directions, recommendations</td></tr>
-                        <tr><td><strong>Avatar Animation</strong></td><td>Animated character responds with synchronized lip movement and expressions</td></tr>
-                        <tr><td><strong>Offline Operation</strong></td><td>Entire system runs without internet — deploy in basements, remote resorts, or pop-up events</td></tr>
-                    </tbody>
-                </table>
-                <div class="info-box tip">
-                    <strong>Why NPU matters here:</strong> Kiosks deployed across dozens of locations can't rely on stable internet. 
-                    Each unit runs independently with NPU inference — no per-query cloud API costs at scale. Deploy 50 kiosks and 
-                    pay zero marginal inference cost versus cloud-based chatbots that charge per conversation.
-                    <br><br>
-                    <a href="https://github.com/npuneil/avatar-kiosk" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+            <!-- Professional Services Detail -->
+            <div class="industry-detail" id="detail-professional" style="display:none">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">👔</div>
+                        <div><h3>Professional Services — Remote Hiring</h3><div class="card-subtitle">On-device AI for secure candidate screening and interviews</div></div>
+                    </div>
+                    <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                        Professional services firms conducting remote hiring need to process resumes, verify identity documents, 
+                        and run structured interviews — all while protecting candidate PII. An NPU-powered hiring assistant 
+                        handles the full workflow without sending any candidate data to cloud services.
+                    </p>
+                    <table class="capability-table">
+                        <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Resume Analysis</strong></td><td>SLM on NPU extracts skills, experience, certifications and matches against job requirements</td></tr>
+                            <tr><td><strong>ID Verification</strong></td><td>Vision models on NPU scan and validate government-issued IDs, detecting tampering or inconsistencies</td></tr>
+                            <tr><td><strong>Interview Engine</strong></td><td>AI-generated structured interview questions based on role and resume analysis, with real-time follow-ups</td></tr>
+                            <tr><td><strong>Candidate Scoring</strong></td><td>On-device model generates structured evaluation reports with skill-match percentages</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="info-box tip">
+                        <strong>Why NPU matters here:</strong> Candidate resumes, identity documents, and interview recordings contain highly sensitive PII. 
+                        In many jurisdictions (EU GDPR, US state privacy laws), processing biometric data and personal information 
+                        requires explicit controls. NPU-local processing eliminates third-party data processor agreements entirely.
+                        <br><br>
+                        <a href="https://github.com/npuneil/Remote-Hiring-NPU-Demo" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon" style="background:var(--red-dim, #3a1a1a);color:var(--red, #ff6b6b)">🛡️</div>
-                    <div><h3>Media &amp; Communications — Content Authenticity</h3><div class="card-subtitle">On-device AI for detecting AI-generated content</div></div>
-                </div>
-                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
-                    Media organizations, newsrooms, and content platforms need to verify whether text, images, and video 
-                    are authentic or AI-generated. An NPU-powered content authenticity analyzer runs multiple detection 
-                    models — text analysis, image forensics, and video temporal consistency — entirely on-device.
-                </p>
-                <table class="capability-table">
-                    <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
-                    <tbody>
-                        <tr><td><strong>Text Analysis</strong></td><td>NPU-accelerated text classifier evaluates vocabulary patterns, sentence variance, Zipf's law fit, and repetition</td></tr>
-                        <tr><td><strong>Image Forensics</strong></td><td>MobileNetV2 on NPU performs inference, combined with FFT frequency analysis, noise patterns, and edge coherence</td></tr>
-                        <tr><td><strong>Video Analysis</strong></td><td>Frame-by-frame extraction with per-frame image analysis and temporal consistency checks across the timeline</td></tr>
-                        <tr><td><strong>Confidence Scoring</strong></td><td>Color-coded results (Real → Questionable → AI-Generated) with detailed breakdown of detection signals</td></tr>
-                    </tbody>
-                </table>
-                <div class="info-box tip">
-                    <strong>Why NPU matters here:</strong> Content verification at scale requires processing every incoming piece of content. 
-                    Cloud-based detection APIs add latency and cost per item. NPU inference means a newsroom can analyze every photo, 
-                    article, and video clip at zero marginal cost — critical as AI-generated content volume explodes.
-                    <br><br>
-                    <a href="https://github.com/npuneil/npu-content-detector" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+            <!-- Energy & Utilities Detail -->
+            <div class="industry-detail" id="detail-energy" style="display:none">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:var(--amber-dim);color:var(--amber)">⚡</div>
+                        <div><h3>Energy &amp; Utilities — Field Worker Assistant</h3><div class="card-subtitle">AI-powered field operations in connectivity-challenged environments</div></div>
+                    </div>
+                    <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                        Energy field workers operate at remote substations, pipelines, and generation facilities — often 
+                        with zero connectivity. An NPU-powered field assistant provides AI-driven equipment diagnostics, 
+                        safety procedure guidance, and reporting — all running locally on a Copilot+ PC.
+                    </p>
+                    <table class="capability-table">
+                        <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Equipment Diagnostics</strong></td><td>Vision models on NPU analyze photos of equipment, gauges, and infrastructure for anomaly detection</td></tr>
+                            <tr><td><strong>Procedure Guidance</strong></td><td>SLM provides step-by-step maintenance procedures, safety checklists, and troubleshooting guidance</td></tr>
+                            <tr><td><strong>Voice Interaction</strong></td><td>NPU-powered speech-to-text allows hands-free operation while working on equipment</td></tr>
+                            <tr><td><strong>Incident Reporting</strong></td><td>Auto-generate structured incident reports from voice notes, photos, and sensor readings</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="info-box tip">
+                        <strong>Why NPU matters here:</strong> Remote energy sites (oil platforms, wind farms, substations) often have no cellular or 
+                        Wi-Fi connectivity. NPU processing ensures the field worker has a fully capable AI assistant regardless of location. 
+                        When connectivity returns, reports sync automatically. Battery efficiency of the NPU means all-day operation in the field.
+                        <br><br>
+                        <a href="https://github.com/npuneil/Energy-Field-Worker-NPU-Prototype" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🔧</div>
-                    <div><h3>Getting Started: Build Your Own</h3><div class="card-subtitle">Common architecture pattern for custom NPU apps</div></div>
+            <!-- Retail & Hospitality Detail -->
+            <div class="industry-detail" id="detail-retail" style="display:none">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🤖</div>
+                        <div><h3>Retail &amp; Hospitality — AI Avatar Kiosk</h3><div class="card-subtitle">Interactive AI concierge powered entirely by on-device inference</div></div>
+                    </div>
+                    <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                        Retail stores, hotel lobbies, and event venues can deploy AI-powered avatar kiosks that interact 
+                        with customers via voice and visual conversation — with no cloud dependency. The kiosk runs 
+                        speech recognition (Whisper) and language models (TinyLlama) entirely on the NPU.
+                    </p>
+                    <table class="capability-table">
+                        <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Voice Input</strong></td><td>Whisper speech-to-text model running on NPU converts customer speech to text in real time</td></tr>
+                            <tr><td><strong>AI Conversation</strong></td><td>TinyLlama SLM on NPU generates contextual, helpful responses — product info, directions, recommendations</td></tr>
+                            <tr><td><strong>Avatar Animation</strong></td><td>Animated character responds with synchronized lip movement and expressions</td></tr>
+                            <tr><td><strong>Offline Operation</strong></td><td>Entire system runs without internet — deploy in basements, remote resorts, or pop-up events</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="info-box tip">
+                        <strong>Why NPU matters here:</strong> Kiosks deployed across dozens of locations can't rely on stable internet. 
+                        Each unit runs independently with NPU inference — no per-query cloud API costs at scale. Deploy 50 kiosks and 
+                        pay zero marginal inference cost versus cloud-based chatbots that charge per conversation.
+                        <br><br>
+                        <a href="https://github.com/npuneil/avatar-kiosk" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+                    </div>
                 </div>
-                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
-                    Every "Build Your Own" scenario above follows a common architecture pattern:
-                </p>
+            </div>
+
+            <!-- Media & Communications Detail -->
+            <div class="industry-detail" id="detail-media" style="display:none">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:var(--red-dim, #3a1a1a);color:var(--red, #ff6b6b)">🛡️</div>
+                        <div><h3>Media &amp; Communications — Content Authenticity</h3><div class="card-subtitle">On-device AI for detecting AI-generated content</div></div>
+                    </div>
+                    <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                        Media organizations, newsrooms, and content platforms need to verify whether text, images, and video 
+                        are authentic or AI-generated. An NPU-powered content authenticity analyzer runs multiple detection 
+                        models — text analysis, image forensics, and video temporal consistency — entirely on-device.
+                    </p>
+                    <table class="capability-table">
+                        <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Text Analysis</strong></td><td>NPU-accelerated text classifier evaluates vocabulary patterns, sentence variance, Zipf's law fit, and repetition</td></tr>
+                            <tr><td><strong>Image Forensics</strong></td><td>MobileNetV2 on NPU performs inference, combined with FFT frequency analysis, noise patterns, and edge coherence</td></tr>
+                            <tr><td><strong>Video Analysis</strong></td><td>Frame-by-frame extraction with per-frame image analysis and temporal consistency checks across the timeline</td></tr>
+                            <tr><td><strong>Confidence Scoring</strong></td><td>Color-coded results (Real → Questionable → AI-Generated) with detailed breakdown of detection signals</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="info-box tip">
+                        <strong>Why NPU matters here:</strong> Content verification at scale requires processing every incoming piece of content. 
+                        Cloud-based detection APIs add latency and cost per item. NPU inference means a newsroom can analyze every photo, 
+                        article, and video clip at zero marginal cost — critical as AI-generated content volume explodes.
+                        <br><br>
+                        <a href="https://github.com/npuneil/npu-content-detector" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Architecture Pattern Detail -->
+            <div class="industry-detail" id="detail-architecture" style="display:none">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🔧</div>
+                        <div><h3>Getting Started: Build Your Own</h3><div class="card-subtitle">Common architecture pattern for custom NPU apps</div></div>
+                    </div>
+                    <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                        Every "Build Your Own" scenario above follows a common architecture pattern:
+                    </p>
 <div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;">┌──────────────────────────────────────────────────────┐
 │              Your Application UI                      │
 │         (Web, WinUI 3, WPF, Console)                  │
@@ -2503,10 +2566,129 @@ Stack choices:
 ├── Embeddings    → Windows Copilot Runtime APIs
 ├── OCR           → Windows ML / Tesseract on NPU
 └── Speech        → Whisper ONNX on NPU</pre></div>
+                    <div class="info-box tip">
+                        All prototypes above are <strong>open source</strong> on the 
+                        <a href="https://github.com/npuneil" target="_blank" style="color:var(--accent)">NPUNeil GitHub</a>. 
+                        Clone any repo to explore the code, adapt the patterns for your industry, and start building on your Copilot+ PC.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hybrid AI Use Case Builder Page -->
+        <div class="page" id="page-usecasebuilder">
+            <iframe src="/static/usecasebuilder/index.html" style="width:100%;height:calc(100vh - 20px);border:none;border-radius:8px;"></iframe>
+        </div>
+
+        <!-- Workshops & Kickstarters Page -->
+        <div class="page" id="page-workshops">
+            <div class="page-header">
+                <h2>A Practical Path to Hybrid AI</h2>
+                <p>From curiosity to execution — structured engagements that take you from concept to prototype</p>
+            </div>
+
+            <div class="feature-hero" style="border-left: 3px solid var(--purple);">
+                <h3>🚀 Cloud First to Edge Forward</h3>
+                <p>Three structured engagements guide your organization from initial curiosity through strategic alignment 
+                   to a working proof of concept — compressing weeks of planning into focused, expert-led sessions.</p>
+            </div>
+
+            <!-- Journey Steps -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--blue-dim);color:var(--blue)">1️⃣</div>
+                    <div><h3>Cloud First to Edge Forward</h3><div class="card-subtitle">The front door — from curiosity to clarity</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Detail</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Format</strong></td><td>1-hour session or webinar</td></tr>
+                        <tr><td><strong>Audience</strong></td><td>Anyone interested, curious, or early champions</td></tr>
+                        <tr><td><strong>Positioning</strong></td><td>Early clarity and opportunity discovery</td></tr>
+                    </tbody>
+                </table>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin:12px 0;">
+                    Customers use this session to move from curiosity to clarity by exploring what is possible, 
+                    understanding where value shows up for them, and identifying the right next step. All in a simple, 
+                    low-pressure format before investing time in a deeper, multi-stakeholder workshop.
+                </p>
                 <div class="info-box tip">
-                    All prototypes above are <strong>open source</strong> on the 
-                    <a href="https://github.com/npuneil" target="_blank" style="color:var(--accent)">NPUNeil GitHub</a>. 
-                    Clone any repo to explore the code, adapt the patterns for your industry, and start building on your Copilot+ PC.
+                    <strong>Key takeaways:</strong>
+                    <ul style="margin:8px 0 0 16px;line-height:1.8;">
+                        <li>A clear understanding of why cloud-first architectures are extending to the edge, and when Copilot+ PCs, NPUs, privacy, latency, and cost actually matter</li>
+                        <li>Concrete scenarios and architectural patterns that can be applied immediately — not abstract AI theory</li>
+                        <li>A practical view of how hybrid AI works across Windows, Surface, and Azure in real customer environments</li>
+                        <li>Get started without needing full stakeholder commitment upfront</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--green-dim);color:var(--green)">2️⃣</div>
+                    <div><h3>Surface AI Envisioning Workshop</h3><div class="card-subtitle">Cross-functional alignment and confident decision-making</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Detail</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Format</strong></td><td>Full day or split session delivery</td></tr>
+                        <tr><td><strong>Audience</strong></td><td>Business and technical stakeholders together</td></tr>
+                        <tr><td><strong>Positioning</strong></td><td>Decide what is worth pursuing and what is not</td></tr>
+                    </tbody>
+                </table>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin:12px 0;">
+                    Discover the strategic value of Copilot+ PC devices with NPU, and gain clarity on how local &amp; hybrid AI 
+                    can address specific business priorities — from streamlining workflows to protecting sensitive data. Work 
+                    with the AI Solution Factory team to identify key opportunities for hybrid AI adoption across your organization.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Who Should Attend</th><th>Workshop Topics</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>CIO / CTO / CISO</strong></td><td>Microsoft Surface Copilot+ Value Stack &amp; Platform</td></tr>
+                        <tr><td><strong>AI App Developers</strong></td><td>Microsoft Surface Copilot+ PC Innovation</td></tr>
+                        <tr><td><strong>Modern Work / Decision Makers</strong></td><td>Security Deep Dive</td></tr>
+                        <tr><td><strong>Product Managers</strong></td><td>App Showcase — AI in Action</td></tr>
+                        <tr><td><strong>Endpoint Engineers</strong></td><td>ROI &amp; Business Case Framing</td></tr>
+                        <tr><td><strong>IT Architects / Employee Experience</strong></td><td>Scenario Mapping Workshop</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">3️⃣</div>
+                    <div><h3>Surface AI Dev Kickstarter</h3><div class="card-subtitle">From viable scenario to working proof of concept</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Detail</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Format</strong></td><td>Full day engagement</td></tr>
+                        <tr><td><strong>Audience</strong></td><td>Engineering, product, and architects</td></tr>
+                        <tr><td><strong>Positioning</strong></td><td>Execution — build a working proof of concept that demonstrates real value</td></tr>
+                    </tbody>
+                </table>
+                <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin:12px 0;">
+                    The Kickstarter PoC Builder Workshop is the next step for teams who leave the Envisioning Workshop 
+                    with a viable, high-value AI scenario and are ready to accelerate toward a real prototype. Delivered 
+                    in partnership with Teknikos, this session provides a structured, expert-guided experience to design, 
+                    architect, and begin building a functional PoC leveraging on-device NPU inferencing and hybrid AI patterns. 
+                    This workshop compresses weeks of planning into a single day of focused execution.
+                </p>
+                <table class="capability-table">
+                    <thead><tr><th>Who Should Attend</th><th>NPU Evaluators Covered</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>AI CoE Teams</strong></td><td>Data-handling constraints (privacy &amp; security)</td></tr>
+                        <tr><td><strong>Solution Architects</strong></td><td>Local context &amp; content</td></tr>
+                        <tr><td><strong>Application Developers</strong></td><td>Proximity to sensors (camera, mic)</td></tr>
+                        <tr><td><strong>Product Managers</strong></td><td>Inference economics (PAYG and subscription AI services)</td></tr>
+                        <tr><td><strong>AI Program Owners</strong></td><td>Latency, performance &amp; network considerations</td></tr>
+                        <tr><td><strong>Business Decision Makers</strong></td><td>Hybrid AI architecture patterns</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    <strong>The journey:</strong> Take your AI journey from concept to prototype — start with the 
+                    <strong>Cloud First to Edge Forward</strong> webinar, align your stakeholders in the 
+                    <strong>Envisioning Workshop</strong>, then build it in the <strong>Dev Kickstarter</strong>.
                 </div>
             </div>
         </div>
