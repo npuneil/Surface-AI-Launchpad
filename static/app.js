@@ -17,6 +17,29 @@ let selectedModel = null;
 let foundryOnline = false;
 
 // ---------------------------------------------------------------------------
+// Sidebar Toggle
+// ---------------------------------------------------------------------------
+function toggleSidebar() {
+    document.querySelector('.app-shell').classList.toggle('sidebar-collapsed');
+}
+
+// ---------------------------------------------------------------------------
+// Industry Scenario Drill-Down
+// ---------------------------------------------------------------------------
+function showIndustryDetail(id) {
+    document.getElementById('industry-pills').style.display = 'none';
+    document.querySelectorAll('.industry-detail').forEach(d => d.style.display = 'none');
+    document.getElementById('detail-' + id).style.display = 'block';
+    document.getElementById('industry-back-btn').style.display = 'inline-flex';
+}
+
+function showIndustryPills() {
+    document.querySelectorAll('.industry-detail').forEach(d => d.style.display = 'none');
+    document.getElementById('industry-back-btn').style.display = 'none';
+    document.getElementById('industry-pills').style.display = 'grid';
+}
+
+// ---------------------------------------------------------------------------
 // Navigation (normal app)
 // ---------------------------------------------------------------------------
 function navigateTo(page) {
@@ -43,6 +66,14 @@ function toggleNavSection(label) {
     label.classList.toggle('open');
     const items = label.nextElementSibling;
     if (items && items.classList.contains('nav-section-items')) {
+        items.classList.toggle('open');
+    }
+}
+
+function toggleNavSubsection(label) {
+    label.classList.toggle('open');
+    const items = label.nextElementSibling;
+    if (items && items.classList.contains('nav-subsection-items')) {
         items.classList.toggle('open');
     }
 }
