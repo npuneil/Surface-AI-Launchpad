@@ -1,8 +1,8 @@
 <Window
-    x:Class="NPUniversity.Desktop.MainWindow"
+    x:Class="SurfaceAILaunchpad.Desktop.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="NPUniversity — Your On-Device AI Campus">
+    Title="Surface AI Launchpad — Build On-Device AI for Microsoft Surface">
 
     <Grid>
         <!-- Prerequisites checklist (first run / when something is missing) -->
@@ -17,7 +17,7 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0" Spacing="6" Margin="0,0,0,16">
-                    <TextBlock Text="🎓 Welcome to NPUniversity"
+                    <TextBlock Text="🚀 Welcome to Surface AI Launchpad"
                                FontSize="28" FontWeight="SemiBold" Foreground="#e8e8f0"/>
                     <TextBlock x:Name="PrereqSubtitle"
                                Text="Let's make sure your PC has everything needed to run on-device AI."
@@ -46,7 +46,7 @@
                             Click="OnRecheck"/>
                     <Button x:Name="InstallAllButton" Content="Install missing"
                             Click="OnInstallAll"/>
-                    <Button x:Name="ContinueButton" Content="Continue to NPUniversity"
+                    <Button x:Name="ContinueButton" Content="Continue to Surface AI Launchpad"
                             IsEnabled="False"
                             Click="OnContinue"/>
                 </StackPanel>
@@ -64,7 +64,7 @@
         <Grid x:Name="LoadingOverlay" Background="#0a0a0f" Visibility="Collapsed">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
                 <ProgressRing IsActive="True" Width="48" Height="48" />
-                <TextBlock Text="🎓 Starting NPUniversity..."
+                <TextBlock Text="🚀 Starting Surface AI Launchpad..."
                            FontSize="18" Foreground="#e8e8f0"
                            HorizontalAlignment="Center" />
                 <TextBlock x:Name="LoadingStatus" Text="Launching backend server..."

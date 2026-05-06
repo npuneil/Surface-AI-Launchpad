@@ -1,7 +1,7 @@
 #nullable enable
 using Microsoft.UI.Xaml;
 
-namespace NPUniversity.Desktop;
+namespace SurfaceAILaunchpad.Desktop;
 
 public partial class App : Application
 {

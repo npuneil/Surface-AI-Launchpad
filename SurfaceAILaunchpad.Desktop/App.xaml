@@ -1,8 +1,8 @@
 <Application
-    x:Class="NPUniversity.Desktop.App"
+    x:Class="SurfaceAILaunchpad.Desktop.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:NPUniversity.Desktop">
+    xmlns:local="using:SurfaceAILaunchpad.Desktop">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

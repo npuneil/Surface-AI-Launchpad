@@ -9,28 +9,28 @@
 
 Mission control for learning and shipping on-device AI across CPU, GPU, and NPU on Copilot+ PCs — guided by "Apollo", an AI mission commander that adapts briefings by skill level. Running locally via Microsoft Foundry Local.
 
-> 🛰️ **Note on internal identifiers.** This rebrand currently updates the user-facing UI, mascot, and theme. Internal package/project names (`NPUniversity.Desktop`, MSIX manifest identity, repo path, etc.) are unchanged to avoid breaking the existing MSIX signing and GitHub Release pipeline. A separate pass is needed to fully rename those.
+> 🛰️ **Note on the rebrand.** As of v1.1.0, project files, namespace, MSIX identity, and installer are all renamed to `SurfaceAILaunchpad`. Older releases on disk may still reference the old `NPUniversity` package name — uninstall those before installing v1.1.0+.
 
 ## Download & Install (Windows 11, ARM64 / Snapdragon Copilot+ PC)
 
 The packaged MSIX is published as a GitHub Release:
 
-➡️ **[Download the latest MSIX from Releases](https://github.com/npuneil/NPUniversity/releases/latest)**
+➡️ **[Download the latest MSIX from Releases](https://github.com/npuneil/Surface-AI-Launchpad/releases/latest)**
 
 Because this is a demo, the MSIX is signed with a self-signed certificate.
 You must (1) install the certificate as trusted, then (2) sideload the MSIX:
 
 1. Enable Developer Mode (one-time): `Settings → System → For developers → Developer Mode = On`.
-2. Download `NPUniversity-<version>-arm64.msix` **and** `NPUniversity.cer` from the release page.
+2. Download `SurfaceAILaunchpad-<version>-<arch>.msix` **and** `SurfaceAILaunchpad.cer` from the release page (`<arch>` is `arm64` for Snapdragon, `x64` for Intel/AMD).
 3. From an **elevated** PowerShell, trust the cert (one-time):
    ```powershell
-   Import-Certificate -FilePath .\NPUniversity.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
+   Import-Certificate -FilePath .\SurfaceAILaunchpad.cer -CertStoreLocation Cert:\LocalMachine\TrustedPeople
    ```
 4. Install the app (no admin needed once cert is trusted):
    ```powershell
-   Add-AppxPackage .\NPUniversity-<version>-arm64.msix
+   Add-AppxPackage .\SurfaceAILaunchpad-<version>-<arch>.msix
    ```
-4. Launch **NPUniversity** from the Start menu. The first-run screen detects
+4. Launch **Surface AI Launchpad** from the Start menu. The first-run screen detects
    your NPU and installs missing prerequisites (Foundry Local, Python 3.12,
    VC++ runtime, an NPU-optimized Phi-4-mini model) via `winget`.
 

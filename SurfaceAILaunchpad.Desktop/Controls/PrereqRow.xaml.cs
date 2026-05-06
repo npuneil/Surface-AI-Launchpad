@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI;
-using NPUniversity.Desktop.Services;
+using SurfaceAILaunchpad.Desktop.Services;
 
-namespace NPUniversity.Desktop.Controls;
+namespace SurfaceAILaunchpad.Desktop.Controls;
 
 public sealed partial class PrereqRow : UserControl
 {

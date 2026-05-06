@@ -3,11 +3,11 @@ __pycache__/
 .env
 .venv/
 
-NPUniversity.zip
+SurfaceAILaunchpad.zip
 
 *.msix
 dist/
-NPUniversity.Desktop/bin/
-NPUniversity.Desktop/obj/
+SurfaceAILaunchpad.Desktop/bin/
+SurfaceAILaunchpad.Desktop/obj/
 tools/PrereqTest/bin/
 tools/PrereqTest/obj/

@@ -1,7 +1,7 @@
 #requires -Version 7.0
 <#
 .SYNOPSIS
-  Build a signed (or unsigned dev-mode) MSIX package for NPUniversity.
+  Build a signed (or unsigned dev-mode) MSIX package for Surface AI Launchpad.
 
 .DESCRIPTION
   Wraps `dotnet publish` with the WinUI 3 / Windows App SDK MSIX tooling.
@@ -33,10 +33,10 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $projectDir  = $PSScriptRoot
-$projectFile = Join-Path $projectDir 'NPUniversity.Desktop.csproj'
+$projectFile = Join-Path $projectDir 'SurfaceAILaunchpad.Desktop.csproj'
 $rid = if ($Platform -eq 'ARM64') { 'win-arm64' } else { 'win-x64' }
 
-Write-Host "==> Building NPUniversity MSIX ($Platform / $Configuration)" -ForegroundColor Cyan
+Write-Host "==> Building Surface AI Launchpad MSIX ($Platform / $Configuration)" -ForegroundColor Cyan
 New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
 
 $publishArgs = @(

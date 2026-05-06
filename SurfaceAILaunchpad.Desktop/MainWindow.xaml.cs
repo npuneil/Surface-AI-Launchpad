@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
-using NPUniversity.Desktop.Controls;
-using NPUniversity.Desktop.Services;
+using SurfaceAILaunchpad.Desktop.Controls;
+using SurfaceAILaunchpad.Desktop.Services;
 
-namespace NPUniversity.Desktop;
+namespace SurfaceAILaunchpad.Desktop;
 
 public sealed partial class MainWindow : Window
 {
@@ -27,7 +27,7 @@ public sealed partial class MainWindow : Window
     public MainWindow()
     {
         this.InitializeComponent();
-        this.Title = "NPUniversity — Your On-Device AI Campus";
+        this.Title = "Surface AI Launchpad — Build On-Device AI for Microsoft Surface";
         this.AppWindow.Resize(new Windows.Graphics.SizeInt32(1400, 900));
 
         this.Closed += OnWindowClosed;
@@ -53,7 +53,7 @@ public sealed partial class MainWindow : Window
             _ => "No NPU detected"
         };
         PrereqBannerMessage.Text = vendor == NpuVendor.None
-            ? "NPUniversity will run on CPU. For best performance use a Copilot+ PC."
+            ? "Surface AI Launchpad will run on CPU. For best performance use a Copilot+ PC."
             : $"Foundry Local will accelerate models on the {vendor} NPU.";
         PrereqBanner.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(
             vendor == NpuVendor.None

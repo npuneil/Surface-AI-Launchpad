@@ -80,7 +80,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="NPUniversity", lifespan=lifespan)
+app = FastAPI(title="Surface AI Launchpad", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
 # ---------------------------------------------------------------------------

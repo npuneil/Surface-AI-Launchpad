@@ -1,7 +1,7 @@
 @echo off
-:: NPUniversity One-Click Installer
+:: Surface AI Launchpad One-Click Installer
 :: Detects your silicon (Intel/AMD vs Snapdragon) and installs the right version.
-:: Double-click to run — it will self-elevate to admin if needed.
+:: Double-click to run ? it will self-elevate to admin if needed.
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 :: Self-elevate if not admin
@@ -14,15 +14,15 @@ if %errorlevel% neq 0 (
 
 cd /d "%~dp0"
 echo.
-echo  ========================================
-echo   NPUniversity Installer
-echo  ========================================
+echo  ==========================================
+echo   Surface AI Launchpad Installer
+echo  ==========================================
 echo.
 
 :: 1. Install signing certificate to Trusted People store
 echo [1/4] Installing certificate...
-if exist "%~dp0NPUniversity.cer" (
-    certutil -addstore TrustedPeople "%~dp0NPUniversity.cer" >nul 2>&1
+if exist "%~dp0SurfaceAILaunchpad.cer" (
+    certutil -addstore TrustedPeople "%~dp0SurfaceAILaunchpad.cer" >nul 2>&1
     echo       Done.
 ) else (
     echo       Certificate not found - install may fail.
@@ -65,19 +65,19 @@ if %errorlevel% neq 0 (
 echo       Done.
 
 :: 4. Launch the app
-echo [4/4] Launching NPUniversity...
+echo [4/4] Launching Surface AI Launchpad...
 timeout /t 2 /nobreak >nul
-powershell -Command "Get-AppxPackage -Name '*NPUniversity*' | ForEach-Object { Start-Process ('shell:AppsFolder\' + $_.PackageFamilyName + '!App') }" 2>nul
+powershell -Command "Get-AppxPackage -Name '*SurfaceAILaunchpad*' | ForEach-Object { Start-Process ('shell:AppsFolder\' + $_.PackageFamilyName + '!App') }" 2>nul
 if %errorlevel% neq 0 (
-    echo       Launch from Start menu: search for "NPUniversity"
+    echo       Launch from Start menu: search for "Surface AI Launchpad"
 )
 
 echo.
-echo  ========================================
+echo  ==========================================
 echo   Installation complete!
-echo  ========================================
+echo  ==========================================
 echo.
-echo  NPUniversity is now in your Start menu.
+echo  Surface AI Launchpad is now in your Start menu.
 echo  You can close this window.
 echo.
 timeout /t 5

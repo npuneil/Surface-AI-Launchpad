@@ -1,6 +1,6 @@
 // Quick smoke-test harness for Prerequisites detection. Not part of the package.
 // Run with: dotnet run --project tools/PrereqTest -c Release
-using NPUniversity.Desktop.Services;
+using SurfaceAILaunchpad.Desktop.Services;
 
 Console.WriteLine($"NPU vendor: {Prerequisites.DetectNpuVendor()}");
 Console.WriteLine();

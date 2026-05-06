@@ -1,5 +1,5 @@
 <UserControl
-    x:Class="NPUniversity.Desktop.Controls.PrereqRow"
+    x:Class="SurfaceAILaunchpad.Desktop.Controls.PrereqRow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Border Background="#13131f" CornerRadius="8" Padding="14">

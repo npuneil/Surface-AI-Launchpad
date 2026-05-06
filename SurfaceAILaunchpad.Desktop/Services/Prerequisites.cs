@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 
-namespace NPUniversity.Desktop.Services;
+namespace SurfaceAILaunchpad.Desktop.Services;
 
 /// <summary>
 /// State of a single prerequisite at check-time.
@@ -42,7 +42,7 @@ public sealed class PrereqItem
 public enum NpuVendor { None, Qualcomm, Intel, AMD }
 
 /// <summary>
-/// Detects and installs runtime prerequisites for NPUniversity:
+/// Detects and installs runtime prerequisites for Surface AI Launchpad:
 /// Python 3.10+, Foundry Local, NPU runtime/driver, an NPU-optimized model,
 /// and the Microsoft Visual C++ runtime (required by some Foundry providers).
 /// </summary>
@@ -78,7 +78,7 @@ public static class Prerequisites
             NpuVendor.Qualcomm => "Snapdragon NPU detected — Foundry Local will use the QNN execution provider for NPU acceleration.",
             NpuVendor.Intel => "Intel Core Ultra detected — Foundry Local will use the OpenVINO execution provider for NPU acceleration.",
             NpuVendor.AMD => "AMD Ryzen AI detected — Foundry Local will use the Ryzen AI / VitisAI execution provider for NPU acceleration.",
-            _ => "No supported NPU detected. NPUniversity will fall back to CPU models. A Copilot+ PC (Snapdragon X / Core Ultra / Ryzen AI) is recommended."
+            _ => "No supported NPU detected. Surface AI Launchpad will fall back to CPU models. A Copilot+ PC (Snapdragon X / Core Ultra / Ryzen AI) is recommended."
         };
 
         return new List<PrereqItem>
@@ -87,7 +87,7 @@ public static class Prerequisites
             {
                 Id = "webview2",
                 Name = "Microsoft Edge WebView2 Runtime",
-                Description = "Renders the NPUniversity UI inside the desktop app.",
+                Description = "Renders the Surface AI Launchpad UI inside the desktop app.",
                 Required = true,
                 WingetId = "Microsoft.EdgeWebView2Runtime",
                 DocsUrl = "https://developer.microsoft.com/microsoft-edge/webview2/"
@@ -96,7 +96,7 @@ public static class Prerequisites
             {
                 Id = "python",
                 Name = "Python 3.10+",
-                Description = "Runs the FastAPI backend that powers NPUniversity.",
+                Description = "Runs the FastAPI backend that powers Surface AI Launchpad.",
                 Required = true,
                 WingetId = "Python.Python.3.12",
                 DocsUrl = "https://www.python.org/downloads/"

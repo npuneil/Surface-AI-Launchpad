@@ -1,5 +1,5 @@
 """
-NPUniversity Hardening Test Suite
+Surface AI Launchpad Hardening Test Suite
 Comprehensive tests for student-facing reliability.
 Tests: API endpoints, edge cases, FAQ system, XSS safety, streaming, error handling.
 """
@@ -40,7 +40,7 @@ async def run_tests():
         r = await c.get("/")
         result("GET / returns 200", r.status_code == 200)
         result("Home page has <html>", "<html" in r.text)
-        result("Home page has NPUniversity", "NPUniversity" in r.text)
+        result("Home page has Surface AI Launchpad", "Surface AI Launchpad" in r.text)
 
         # 1b. Static files
         r = await c.get("/static/app.js")
