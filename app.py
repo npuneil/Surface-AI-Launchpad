@@ -3,9 +3,20 @@ Get Started with NPU - A guide to on-device AI with Foundry Local
 Detects silicon, recommends SLMs, and provides an AI chat assistant.
 """
 
+import io
+import os
+import sys
+
+# Force UTF-8 stdout/stderr so Unicode chars (✓, ⏳, ⚠) don't crash on cp1252
+if sys.platform == "win32" and os.environ.get("PYTHONIOENCODING") is None:
+    os.environ["PYTHONIOENCODING"] = "utf-8"
+    for stream_name in ("stdout", "stderr"):
+        stream = getattr(sys, stream_name)
+        if hasattr(stream, "buffer"):
+            setattr(sys, stream_name, io.TextIOWrapper(stream.buffer, encoding="utf-8", errors="replace"))
+
 import asyncio
 import json
-import os
 import re
 import subprocess
 import tempfile
@@ -260,13 +271,13 @@ FOUNDRY_MODELS = [
     {"alias": "mistral-7b-v0.2", "device": "NPU", "tasks": ["chat"], "size_gb": 3.60, "model_id": "Mistral-7B-Instruct-v0-2-openvino-npu:2", "quality": 7, "speed": 7, "description": "Classic Mistral on Intel NPU. Balanced performance.", "vendor": "Intel"},
     # NPU models — Qualcomm (QNN). Catalog verified against the official
     # Foundry Local model index (foundrylocal.ai/models, NPU/QNNExecutionProvider).
-    {"alias": "qwen2.5-7b", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 4.17, "model_id": "qwen2.5-7b-instruct-qnn-npu", "quality": 8, "speed": 7, "description": "Versatile 7B model on Qualcomm NPU. Strong at chat and function calling.", "vendor": "Qualcomm"},
-    {"alias": "qwen2.5-1.5b", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 0.86, "model_id": "qwen2.5-1.5b-instruct-qnn-npu", "quality": 6, "speed": 10, "description": "Fast and lightweight on Qualcomm NPU. Good for quick tasks.", "vendor": "Qualcomm"},
-    {"alias": "deepseek-r1-14b", "device": "NPU", "tasks": ["chat"], "size_gb": 7.12, "model_id": "deepseek-r1-distill-qwen-14b-qnn-npu", "quality": 9, "speed": 5, "description": "Most capable Qualcomm NPU reasoning model. Step-by-step thinking.", "vendor": "Qualcomm"},
-    {"alias": "deepseek-r1-7b", "device": "NPU", "tasks": ["chat"], "size_gb": 3.71, "model_id": "deepseek-r1-distill-qwen-7b-qnn-npu", "quality": 8, "speed": 7, "description": "Reasoning model on Qualcomm NPU. Balanced quality and speed.", "vendor": "Qualcomm"},
-    {"alias": "phi-3.5-mini", "device": "NPU", "tasks": ["chat"], "size_gb": 2.13, "model_id": "phi-3.5-mini-instruct-qnn-npu", "quality": 7, "speed": 9, "description": "Compact Phi-3.5 on Qualcomm NPU. Efficient for conversational tasks.", "vendor": "Qualcomm"},
-    {"alias": "phi-3-mini-128k", "device": "NPU", "tasks": ["chat"], "size_gb": 2.13, "model_id": "phi-3-mini-128k-instruct-qnn-npu", "quality": 7, "speed": 8, "description": "Phi-3 with 128K context on Qualcomm NPU. Great for long documents.", "vendor": "Qualcomm"},
-    {"alias": "phi-3-mini-4k", "device": "NPU", "tasks": ["chat"], "size_gb": 2.13, "model_id": "phi-3-mini-4k-instruct-qnn-npu", "quality": 7, "speed": 9, "description": "Phi-3 mini 4K on Qualcomm NPU. Lightweight conversational model.", "vendor": "Qualcomm"},
+    {"alias": "qwen2.5-7b", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 4.17, "model_id": "qwen2.5-7b-instruct-qnn-npu:2", "quality": 8, "speed": 7, "description": "Versatile 7B model on Qualcomm NPU. Strong at chat and function calling.", "vendor": "Qualcomm"},
+    {"alias": "qwen2.5-1.5b", "device": "NPU", "tasks": ["chat", "tools"], "size_gb": 0.86, "model_id": "qwen2.5-1.5b-instruct-qnn-npu:2", "quality": 6, "speed": 10, "description": "Fast and lightweight on Qualcomm NPU. Good for quick tasks.", "vendor": "Qualcomm"},
+    {"alias": "deepseek-r1-14b", "device": "NPU", "tasks": ["chat"], "size_gb": 7.12, "model_id": "deepseek-r1-distill-qwen-14b-qnn-npu:1", "quality": 9, "speed": 5, "description": "Most capable Qualcomm NPU reasoning model. Step-by-step thinking.", "vendor": "Qualcomm"},
+    {"alias": "deepseek-r1-7b", "device": "NPU", "tasks": ["chat"], "size_gb": 3.71, "model_id": "deepseek-r1-distill-qwen-7b-qnn-npu:1", "quality": 8, "speed": 7, "description": "Reasoning model on Qualcomm NPU. Balanced quality and speed.", "vendor": "Qualcomm"},
+    {"alias": "phi-3.5-mini", "device": "NPU", "tasks": ["chat"], "size_gb": 2.13, "model_id": "phi-3.5-mini-instruct-qnn-npu:2", "quality": 7, "speed": 9, "description": "Compact Phi-3.5 on Qualcomm NPU. Efficient for conversational tasks.", "vendor": "Qualcomm"},
+    {"alias": "phi-3-mini-128k", "device": "NPU", "tasks": ["chat"], "size_gb": 2.13, "model_id": "phi-3-mini-128k-instruct-qnn-npu:2", "quality": 7, "speed": 8, "description": "Phi-3 with 128K context on Qualcomm NPU. Great for long documents.", "vendor": "Qualcomm"},
+    {"alias": "phi-3-mini-4k", "device": "NPU", "tasks": ["chat"], "size_gb": 2.13, "model_id": "phi-3-mini-4k-instruct-qnn-npu:2", "quality": 7, "speed": 9, "description": "Phi-3 mini 4K on Qualcomm NPU. Lightweight conversational model.", "vendor": "Qualcomm"},
     # GPU models
     {"alias": "phi-4-mini", "device": "GPU", "tasks": ["chat", "tools"], "size_gb": 3.72, "model_id": "Phi-4-mini-instruct-generic-gpu:5", "quality": 9, "speed": 8, "description": "Top-quality Phi-4 on GPU. Fast with dedicated graphics."},
     {"alias": "phi-4", "device": "GPU", "tasks": ["chat"], "size_gb": 8.37, "model_id": "Phi-4-generic-gpu:2", "quality": 10, "speed": 5, "description": "Best quality model on GPU. Deep reasoning and nuanced responses."},

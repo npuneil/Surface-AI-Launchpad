@@ -235,6 +235,9 @@ function updateFoundryUI(status) {
             preferred = [
                 'qwen2.5-7b-instruct-qnn-npu:2',
                 'phi-3.5-mini-instruct-qnn-npu:2',
+                'qwen2.5-1.5b-instruct-qnn-npu:2',
+                'phi-3-mini-4k-instruct-qnn-npu:2',
+                'Phi-4-mini-instruct-generic-cpu:5',
                 'qwen2.5-0.5b-instruct-generic-cpu:4',
             ];
         } else {
@@ -262,7 +265,7 @@ function updateModelIndicator() {
     if (selectedModel && foundryOnline) {
         // Show friendly name: extract alias from model ID
         const friendly = selectedModel.replace(/-instruct.*$/, '').replace(/-/g, ' ');
-        const device = selectedModel.includes('-npu:') ? 'NPU' : selectedModel.includes('-gpu:') ? 'GPU' : 'CPU';
+        const device = selectedModel.includes('-npu') ? 'NPU' : selectedModel.includes('-gpu') ? 'GPU' : 'CPU';
         el.textContent = `${friendly} · ${device}`;
         el.style.display = 'inline';
     } else {
@@ -1187,6 +1190,13 @@ let micListening = false;
 let activeRecorder = null;
 let activeStream = null;
 
+function initSpeechRecognition() {
+    const micBtn = document.getElementById('profMicBtn');
+    const voiceToggle = document.getElementById('profVoiceToggle');
+    if (micBtn) micBtn.addEventListener('click', toggleMic);
+    if (voiceToggle) voiceToggle.addEventListener('click', toggleVoiceMode);
+}
+
 function getSupportedMime() {
     const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'];
     for (const t of types) { if (MediaRecorder.isTypeSupported(t)) return t; }
@@ -1355,6 +1365,7 @@ if ('speechSynthesis' in window) {
 // ---------------------------------------------------------------------------
 loadHardware();
 loadFoundryStatus();
+initSpeechRecognition();
 
 // Poll Foundry status every 30s — auto-recover if service comes back online
 setInterval(async () => {

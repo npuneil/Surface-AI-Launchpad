@@ -121,7 +121,7 @@ body {
 }
 
 .sidebar-toggle:hover {
-    background: var(--hover);
+    background: var(--surface-2);
     color: var(--text);
 }
 
