@@ -514,49 +514,6 @@ async def health():
     return {"status": "ok"}
 
 
-# ---------------------------------------------------------------------------
-# Use Case Builder — Azure OpenAI proxy
-# ---------------------------------------------------------------------------
-# The embedded Use Case Builder UI calls Azure OpenAI directly. To avoid
-# shipping a key in client JS, the bundle is patched to call this proxy
-# instead. Configure these env vars on the server:
-#   AZURE_OPENAI_ENDPOINT  e.g. https://your-resource.openai.azure.com/
-#   AZURE_OPENAI_API_KEY   the api key  (or use AZURE_OPENAI_USE_AAD=1 + DefaultAzureCredential)
-#   AZURE_OPENAI_DEPLOYMENT  optional override of the model deployment name
-@app.post("/api/usecasebuilder/openai/deployments/{deployment}/chat/completions")
-async def usecasebuilder_proxy(deployment: str, request: Request):
-    endpoint = os.environ.get("AZURE_OPENAI_ENDPOINT", "").rstrip("/")
-    api_key = os.environ.get("AZURE_OPENAI_API_KEY", "")
-    deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT", deployment)
-    api_version = request.query_params.get("api-version", "2024-06-01")
-
-    if not endpoint or not api_key:
-        return JSONResponse(
-            status_code=503,
-            content={
-                "error": "Use Case Builder proxy is not configured.",
-                "hint": "Set AZURE_OPENAI_ENDPOINT and AZURE_OPENAI_API_KEY environment variables on the server.",
-            },
-        )
-
-    upstream_url = f"{endpoint}/openai/deployments/{deployment}/chat/completions?api-version={api_version}"
-    body = await request.body()
-    headers = {"Content-Type": "application/json", "api-key": api_key}
-
-    async def stream_upstream():
-        timeout = httpx.Timeout(15.0, read=300.0)
-        async with httpx.AsyncClient(timeout=timeout) as client:
-            async with client.stream("POST", upstream_url, content=body, headers=headers) as resp:
-                if resp.status_code >= 400:
-                    err = await resp.aread()
-                    yield err
-                    return
-                async for chunk in resp.aiter_raw():
-                    yield chunk
-
-    return StreamingResponse(stream_upstream(), media_type="text/event-stream")
-
-
 @app.get("/", response_class=HTMLResponse)
 async def root():
     with open(BASE_DIR / "static" / "index.html", encoding="utf-8") as f:
