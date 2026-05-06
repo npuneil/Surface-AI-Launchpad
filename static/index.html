@@ -32,7 +32,10 @@
             <span class="nav-icon">🤖</span> Model Recommendations
         </div>
         <div class="nav-item" data-page="toolkit" onclick="navigateTo('toolkit')">
-            <span class="nav-icon">🧰</span> AI Toolkit
+            <span class="nav-icon">🧰</span> Foundry Toolkit
+        </div>
+        <div class="nav-item" data-page="usecasebuilder" onclick="navigateTo('usecasebuilder')">
+            <span class="nav-icon">⚡</span> Use Case Builder
         </div>
 
         <div class="nav-section-label nav-section-collapsible open" onclick="toggleNavSection(this)">
@@ -70,9 +73,6 @@
             <div class="nav-subsection-items">
                 <div class="nav-item" data-page="buildyourown" onclick="navigateTo('buildyourown')">
                     <span class="nav-icon">🏗️</span> Industry Scenarios
-                </div>
-                <div class="nav-item" data-page="usecasebuilder" onclick="navigateTo('usecasebuilder')">
-                    <span class="nav-icon">⚡</span> Use Case Builder
                 </div>
             </div>
         </div>
@@ -2896,15 +2896,36 @@ Stack choices:
         <div class="tour-setup-card">
             <div class="tour-setup-header">
                 <span class="tour-hat">🚀</span>
-                <h2>Apollo's Mission Briefing</h2>
-                <p>I'll build a custom mission plan that maximizes your launch time — or browse all topics at your own pace.</p>
+                <div class="tour-eyebrow">Surface AI Launchpad</div>
+                <h2>Build AI solutions that run on Microsoft Surface</h2>
+                <p>Learn how to design, build, and ship on-device AI experiences for Copilot+ PCs — using the NPU, GPU, and CPU on Surface devices, powered by Microsoft Foundry Local and Windows ML.</p>
+            </div>
+            <div class="tour-setup-pillars">
+                <div class="pillar">
+                    <span class="pillar-icon">🧠</span>
+                    <strong>Run models locally</strong>
+                    <span>Phi, Llama, and other SLMs on the Surface NPU — private, fast, offline.</span>
+                </div>
+                <div class="pillar">
+                    <span class="pillar-icon">🛠️</span>
+                    <strong>Use the right tools</strong>
+                    <span>Foundry Local, AI Toolkit, Windows ML, ONNX Runtime, and the agent stack.</span>
+                </div>
+                <div class="pillar">
+                    <span class="pillar-icon">🚀</span>
+                    <strong>Ship real apps</strong>
+                    <span>From hardware detection to hybrid cloud + edge agent patterns for the enterprise.</span>
+                </div>
             </div>
             <div class="tour-setup-body">
+                <p class="tour-setup-intro">
+                    <strong>👋 I'm Apollo</strong>, your AI mission commander. Pick a path below — I'll either guide you through a tailored mission plan, or step aside while you explore the full catalog.
+                </p>
                 <button class="prof-browse-btn" onclick="browseCurriculum()">
-                    📖 Browse the Curriculum
+                    📖 Browse the full curriculum
                 </button>
                 <div class="tour-setup-divider">
-                    <span>or get a personalized lesson plan</span>
+                    <span>or let Apollo build a mission plan for you</span>
                 </div>
                 <label class="prof-label">⏱️ How much time do you have?</label>
                 <div class="time-options" id="timeOptions">
