@@ -1,13 +1,15 @@
-# NPUniversity — On-Device AI Learning Campus 🎓
+# Surface AI Launchpad — On-Device AI Mission Control 🚀
 
-> ⚠️ **DEMO / SAMPLE CODE — NOT A PRODUCT.** NPUniversity is an experimental
+> ⚠️ **DEMO / SAMPLE CODE — NOT A PRODUCT.** Surface AI Launchpad (formerly NPUniversity) is an experimental
 > prototype provided for educational and demonstration purposes only. It is
 > **not** a Microsoft product and is **not** supported, warranted, or
 > production-ready. See the [On-Device AI Prototypes & Sample Code](#on-device-ai-prototypes--sample-code)
 > section below for the full disclaimers — by downloading, installing, or
 > running the MSIX you accept those terms.
 
-A virtual campus for learning on-device AI concepts, guided by "Professor NPU" — an AI tutor that adapts lessons by skill level. Running entirely on the NPU (Neural Processing Unit) via Microsoft Foundry Local.
+Mission control for learning and shipping on-device AI across CPU, GPU, and NPU on Copilot+ PCs — guided by "Apollo", an AI mission commander that adapts briefings by skill level. Running locally via Microsoft Foundry Local.
+
+> 🛰️ **Note on internal identifiers.** This rebrand currently updates the user-facing UI, mascot, and theme. Internal package/project names (`NPUniversity.Desktop`, MSIX manifest identity, repo path, etc.) are unchanged to avoid breaking the existing MSIX signing and GitHub Release pipeline. A separate pass is needed to fully rename those.
 
 ## Download & Install (Windows 11, ARM64 / Snapdragon Copilot+ PC)
 
@@ -117,11 +119,11 @@ docker run -p 8080:8080 npuniversity
 
 | Feature | Description |
 |---------|-------------|
-| **Professor NPU** | AI tutor that adapts explanations to your skill level |
+| **Apollo** | AI mission commander that adapts explanations to your skill level |
 | **16+ Topics** | Comprehensive curriculum from hardware basics to enterprise patterns |
 | **Interactive Lessons** | Each topic includes overview, hands-on exercises, and quizzes |
 | **Skill Tracking** | Progress tracking across all course levels |
 
 ## Demo Experience
 
-Launch the app and explore topics across the four course levels. Professor NPU adjusts explanations based on your background — from beginner-friendly overviews to deep technical dives.
+Launch the app and explore topics across the four course levels. Apollo adjusts explanations based on your background — from beginner-friendly overviews to deep technical dives.

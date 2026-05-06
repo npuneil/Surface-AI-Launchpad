@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NPUniversity</title>
+    <title>Surface AI Launchpad</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -17,8 +17,8 @@
     <!-- Sidebar -->
     <nav class="sidebar">
         <div class="sidebar-brand">
-            <h1>🎓 NPUniversity</h1>
-            <p>Your On-Device AI Campus</p>
+            <h1>🚀 Surface AI Launchpad</h1>
+            <p>Your On-Device AI Mission Control</p>
         </div>
 
         <div class="nav-section-label">Getting Started</div>
@@ -127,7 +127,7 @@
 
         <div class="sidebar-footer">
             <button class="tour-launch-btn" onclick="openTourSetup()">
-                🎓 Professor Guided Tour
+                🚀 Apollo's Mission Briefing
             </button>
             <div class="foundry-status">
                 <span class="status-dot" id="foundryDot"></span>
@@ -367,9 +367,12 @@
             </div>
 
             <div class="feature-hero">
-                <h3>Run AI models locally, no cloud required</h3>
-                <p>Foundry Local is an OpenAI-compatible local inference server. It manages model downloads, 
-                   hardware optimization (CPU/NPU), and exposes a standard API you can use from any language.</p>
+                <h3>Purpose-built for shipping AI applications</h3>
+                <p>Foundry Local is more than a local inference server — it's an <strong>SDK for shipping AI-powered
+                   applications</strong>. It works fully offline with no cloud dependencies, ships SDKs for
+                   <strong>Python, JavaScript, C#, and Rust</strong>, exposes an <strong>OpenAI-compatible API</strong>
+                   for drop-in integration, and is hardware-optimized in partnership with silicon vendors for
+                   <strong>NPU, GPU, and CPU</strong> execution. Everything stays on-device.</p>
             </div>
 
             <div class="card">
@@ -458,6 +461,23 @@ var response = await chatClient.GetResponseAsync(
 Console.WriteLine(response);</pre></div>
                         </div>
                     </div>
+                    <div class="step-card">
+                        <div class="step-number">JS</div>
+                        <div class="step-content">
+                            <h4>JavaScript SDK (FoundryLocalManager)</h4>
+<div class="cmd-block"><pre style="margin:0;color:var(--text);background:transparent;border:none;padding:0;">import { FoundryLocalManager } from "foundry-local-sdk";
+
+const manager = FoundryLocalManager.create(config);
+const model = manager.getCatalog().getModel("gpt-oss-20b");
+await model.load();
+
+const reply = await model.chat([
+  { role: "user", content: "Hello!" }
+]);
+console.log(reply);</pre></div>
+                            <div class="info-box tip">SDKs ship for <strong>Python, JavaScript, C#, and Rust</strong> — pick the one that matches your stack.</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -487,27 +507,35 @@ Console.WriteLine(response);</pre></div>
         <!-- AI Toolkit Page -->
         <div class="page" id="page-toolkit">
             <div class="page-header">
-                <h2>AI Toolkit for VS Code</h2>
-                <p>Fine-tune, test, and deploy AI models right from your editor</p>
+                <h2>Foundry Toolkit for VS Code</h2>
+                <p>Build, test, and ship AI agents and apps right from your editor — formerly AI Toolkit</p>
             </div>
 
             <div class="feature-hero">
-                <h3>Your AI development workbench</h3>
-                <p>AI Toolkit is a VS Code extension that brings model exploration, prompt testing, fine-tuning, 
-                   and deployment into a single, integrated experience.</p>
+                <h3>Your end-to-end AI app workbench</h3>
+                <p><strong>Foundry Toolkit</strong> (formerly AI Toolkit) is a VS Code extension for building generative AI
+                   apps and agents — locally or in the cloud. It integrates models from <strong>Microsoft Foundry,
+                   Foundry Local, GitHub, ONNX, Ollama, OpenAI, Anthropic, and Google</strong>, and adds first-class
+                   tooling for agent creation, evaluation, tracing, and Windows ML profiling.</p>
+                <div class="info-box tip" style="margin-top:12px;">
+                    📣 Microsoft has rebranded <strong>AI Toolkit</strong> as <strong>Foundry Toolkit</strong>. The
+                    cross-platform documentation now lives at
+                    <a href="https://code.visualstudio.com/docs/intelligentapps/overview" target="_blank" rel="noopener">code.visualstudio.com/docs/intelligentapps</a>.
+                </div>
             </div>
 
             <div class="card">
                 <div class="card-header">
                     <div class="card-icon" style="background:var(--green-dim);color:var(--green)">🚀</div>
-                    <div><h3>Getting Started</h3><div class="card-subtitle">Set up AI Toolkit in minutes</div></div>
+                    <div><h3>Getting Started</h3><div class="card-subtitle">Set up Foundry Toolkit in minutes</div></div>
                 </div>
                 <div class="feature-steps">
                     <div class="step-card">
                         <div class="step-number">1</div>
                         <div class="step-content">
                             <h4>Install the Extension</h4>
-                            <p>Open VS Code and install <strong>AI Toolkit</strong> from the Extensions marketplace, or run:</p>
+                            <p>Open VS Code and install <strong>Foundry Toolkit</strong> (search for "AI Toolkit" or "Foundry Toolkit")
+                               from the Extensions marketplace, or run:</p>
                             <div class="cmd-block">code --install-extension ms-windows-ai-studio.windows-ai-studio<button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
                         </div>
                     </div>
@@ -515,24 +543,33 @@ Console.WriteLine(response);</pre></div>
                         <div class="step-number">2</div>
                         <div class="step-content">
                             <h4>Browse the Model Catalog</h4>
-                            <p>Click the AI Toolkit icon in the sidebar. Browse models from Hugging Face, ONNX model zoo, 
-                               and Azure AI — filtered by what runs on your hardware.</p>
+                            <p>Click the Foundry Toolkit icon in the sidebar. Discover and compare models from
+                               <strong>Microsoft Foundry, Foundry Local, GitHub, ONNX, Ollama, OpenAI, Anthropic, and Google</strong>
+                               — filtered by what runs on your hardware.</p>
                         </div>
                     </div>
                     <div class="step-card">
                         <div class="step-number">3</div>
                         <div class="step-content">
-                            <h4>Test in the Playground</h4>
-                            <p>Use the built-in <strong>Model Playground</strong> to send prompts and compare model outputs. 
-                               Adjust temperature, max tokens, and system prompts interactively.</p>
+                            <h4>Prototype in the Playground</h4>
+                            <p>Use the interactive <strong>Playground</strong> for real-time chat testing with multi-modal inputs
+                               (text, images, attachments) and adjustable parameters.</p>
                         </div>
                     </div>
                     <div class="step-card">
                         <div class="step-number">4</div>
                         <div class="step-content">
-                            <h4>Fine-tune with LoRA</h4>
-                            <p>Fine-tune models on your own data using <strong>QLoRA</strong> — memory-efficient fine-tuning 
-                               that works even on devices with limited VRAM. AI Toolkit handles the training setup.</p>
+                            <h4>Build & Inspect Agents</h4>
+                            <p>Use <strong>Agent Builder</strong> to design prompt agents with MCP tools and structured outputs,
+                               then debug them visually with <strong>Agent Inspector</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <h4>Convert & Fine-tune for Local</h4>
+                            <p>Use <strong>Model Conversion</strong> to quantize and optimize Hugging Face models for CPU/GPU/NPU,
+                               or <strong>fine-tune</strong> locally with GPU support (or in Azure Container Apps).</p>
                         </div>
                     </div>
                 </div>
@@ -541,21 +578,26 @@ Console.WriteLine(response);</pre></div>
             <div class="card">
                 <div class="card-header">
                     <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">🎯</div>
-                    <div><h3>Key Features</h3><div class="card-subtitle">What AI Toolkit can do for you</div></div>
+                    <div><h3>Key Features</h3><div class="card-subtitle">What Foundry Toolkit can do for you</div></div>
                 </div>
                 <table class="capability-table">
                     <thead><tr><th>Feature</th><th>Description</th></tr></thead>
                     <tbody>
-                        <tr><td><strong>Model Catalog</strong></td><td>Browse, search, and download models optimized for local inference (ONNX, PyTorch)</td></tr>
-                        <tr><td><strong>Playground</strong></td><td>Interactive prompt testing with side-by-side model comparison</td></tr>
-                        <tr><td><strong>Fine-tuning</strong></td><td>LoRA/QLoRA fine-tuning with custom datasets, integrated into VS Code</td></tr>
-                        <tr><td><strong>Batch Inference</strong></td><td>Run prompts against datasets for evaluation and benchmarking</td></tr>
-                        <tr><td><strong>ONNX Export</strong></td><td>Convert and optimize models to ONNX format for cross-platform deployment</td></tr>
-                        <tr><td><strong>Foundry Integration</strong></td><td>Seamlessly use Foundry Local models in the playground and your apps</td></tr>
+                        <tr><td><strong>Create Agents</strong></td><td>Build Prompt Agents (tools + vectors) or Hosted Agents with custom code from VS Code</td></tr>
+                        <tr><td><strong>Model Catalog</strong></td><td>Discover models across Microsoft Foundry, Foundry Local, GitHub, ONNX, Ollama, OpenAI, Anthropic, and Google — compare side-by-side</td></tr>
+                        <tr><td><strong>Playground</strong></td><td>Interactive chat with multi-modal inputs (images, attachments) and parameter controls</td></tr>
+                        <tr><td><strong>Agent Builder</strong></td><td>Streamlined prompt engineering with MCP tool integration and production-ready code generation</td></tr>
+                        <tr><td><strong>Agent Inspector</strong></td><td>Debug, visualize, and iterate on AI agents directly within VS Code</td></tr>
+                        <tr><td><strong>Tool Catalog</strong></td><td>Connect Foundry tools and local MCP servers, then attach them to agents in Agent Builder</td></tr>
+                        <tr><td><strong>Model Evaluation</strong></td><td>Built-in evaluators (F1, relevance, similarity, coherence) plus custom criteria over datasets</td></tr>
+                        <tr><td><strong>Fine-tuning</strong></td><td>Adapt models locally with GPU support, or in the cloud via Azure Container Apps</td></tr>
+                        <tr><td><strong>Model Conversion</strong></td><td>Convert, quantize, and optimize models for Windows CPU / GPU / NPU acceleration</td></tr>
+                        <tr><td><strong>Tracing</strong></td><td>Collect and visualize trace data to analyze AI app behavior and performance</td></tr>
+                        <tr><td><strong>Profiling (Windows ML)</strong></td><td>Diagnose CPU/GPU/NPU resource usage of ONNX models across execution providers</td></tr>
                     </tbody>
                 </table>
                 <div class="info-box tip">
-                    AI Toolkit + Foundry Local is the fastest way to go from "exploring models" to "running AI in your app" — 
+                    Foundry Toolkit + Foundry Local is the fastest way to go from "exploring models" to "shipping an AI agent" —
                     all without leaving VS Code or needing cloud resources.
                 </div>
             </div>
@@ -1492,7 +1534,7 @@ print(f"Call: {tool_call.function.name}({tool_call.function.arguments})")</pre><
             </div>
         </div>
 
-        <!-- Chat Page (replaced by Professor NPU widget) -->
+        <!-- Chat Page (replaced by Apollo widget) -->
         <div class="page" id="page-chat" style="display:none!important"></div>
 
         <!-- Microsoft Foundry (Cloud) Page -->
@@ -2219,6 +2261,11 @@ print(f"Edge coherence:    {results['coherence']:.2f}")</pre></div>
                 <p>Independent Software Vendors (ISVs) are integrating NPU acceleration into their applications — 
                    delivering faster performance, lower power consumption, and new AI features that run 
                    entirely on-device. These are apps you install that automatically leverage your NPU hardware.</p>
+                <div class="info-box tip" style="margin-top:12px;">
+                    🌐 The community registry <a href="https://runslocal.ai/" target="_blank" rel="noopener"><strong>runslocal.ai</strong></a>
+                    catalogs <strong>60+ apps and devices</strong> that run AI locally on Windows. Use it to discover
+                    NPU-accelerated software, file change requests, and see hardware benchmark results across CPUs, GPUs, and NPUs.
+                </div>
             </div>
 
             <div class="card">
@@ -2231,9 +2278,35 @@ print(f"Edge coherence:    {results['coherence']:.2f}")</pre></div>
                     <tbody>
                         <tr><td><strong>Adobe Premiere Pro</strong></td><td>Scene Edit Detection, Auto Color, Speech-to-Text</td><td>AI video editing without GPU contention — edit and render simultaneously</td></tr>
                         <tr><td><strong>Adobe Lightroom</strong></td><td>Denoise, Super Resolution, AI Masking</td><td>Batch process photos with AI enhancement at a fraction of the power</td></tr>
-                        <tr><td><strong>DaVinci Resolve</strong></td><td>Magic Mask, Face Refinement, Object Removal</td><td>Real-time AI-powered color grading and effects on NPU</td></tr>
-                        <tr><td><strong>CapCut</strong></td><td>Background Removal, Auto Captions, Style Transfer</td><td>Consumer video editing with pro-level AI features running locally</td></tr>
-                        <tr><td><strong>Affinity Photo</strong></td><td>AI Selection, Noise Reduction, Inpainting</td><td>NPU-accelerated photo editing for professionals</td></tr>
+                        <tr><td><strong>Adobe Photoshop</strong></td><td>Neural Filters: Super Resolution, Smart Portrait, Landscape Mixer</td><td>Real-time AI photo edits accelerated by the NPU</td></tr>
+                        <tr><td><strong>Adobe Illustrator</strong></td><td>Generative AI features incl. Text to Vector Graphic</td><td>NPU-accelerated vector generation</td></tr>
+                        <tr><td><strong>DaVinci Resolve</strong> (Blackmagic Design)</td><td>Magic Mask, Smart Reframe, Voice Isolation</td><td>Real-time AI-powered color grading and effects on NPU</td></tr>
+                        <tr><td><strong>CapCut</strong> (ByteDance)</td><td>Auto Cutout background removal, Auto Captions</td><td>Consumer video editing with pro-level AI features running locally</td></tr>
+                        <tr><td><strong>Affinity Photo 2</strong> (Serif)</td><td>AI selection, segmentation, automated masking</td><td>NPU-accelerated photo editing for professionals</td></tr>
+                        <tr><td><strong>Topaz Video AI</strong> / <strong>Topaz Photo AI</strong></td><td>AI upscaling, denoising, frame interpolation</td><td>Local enhancement of footage and images at high quality</td></tr>
+                        <tr><td><strong>Wondershare Filmora</strong></td><td>Natural-language editing prompts, AI video tasks</td><td>Prompt-driven editing accelerated by the NPU</td></tr>
+                        <tr><td><strong>Luminar Neo</strong> (Skylum)</td><td>AI photo enhancement, sky/object replacement</td><td>One-click AI edits on consumer photos</td></tr>
+                        <tr><td><strong>Capture One</strong></td><td>Hardware-accelerated AI on Snapdragon Windows-on-ARM</td><td>NPU-accelerated tethered/raw photo workflows</td></tr>
+                        <tr><td><strong>CyberLink PhotoDirector / PowerDirector / Promeo</strong></td><td>Object removal, sky replacement, body tracking, motion graphics</td><td>Suite of NPU-accelerated creative tools</td></tr>
+                        <tr><td><strong>Camo Studio</strong> (Reincubate)</td><td>Native Arm camera effects on Copilot+ PCs</td><td>Cutting-edge webcam AI on ARM laptops</td></tr>
+                        <tr><td><strong>Blender</strong></td><td>AI denoising and emerging generative asset pipelines</td><td>Faster 3D rendering on local hardware</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--amber-dim);color:var(--amber)">🎵</div>
+                    <div><h3>Audio &amp; Music Production</h3><div class="card-subtitle">DSP and ML-assisted audio running on NPU</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Application</th><th>NPU Features</th><th>Benefit</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Cubase</strong> (Steinberg / Yamaha)</td><td>AI stem separation (vocals, drums, bass, other)</td><td>Split mixed tracks for remixing without cloud uploads</td></tr>
+                        <tr><td><strong>Nuendo</strong> (Steinberg)</td><td>ML-assisted audio editing for film/TV/games</td><td>Faster audio post-production locally</td></tr>
+                        <tr><td><strong>djay Pro</strong> (Algoriddim)</td><td>Native Windows-on-ARM build leveraging the NPU</td><td>Live DJ AI features on Snapdragon Copilot+ PCs</td></tr>
+                        <tr><td><strong>Moises</strong></td><td>Real-time instrument and vocal isolation</td><td>Practice and remix from any audio source on-device</td></tr>
+                        <tr><td><strong>Focusrite</strong></td><td>AI-driven mixing and signal-processing plug-ins</td><td>Studio-grade ML inside your DAW</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -2248,7 +2321,9 @@ print(f"Edge coherence:    {results['coherence']:.2f}")</pre></div>
                     <tbody>
                         <tr><td><strong>Microsoft Teams</strong></td><td>Background blur/replace, Eye Contact, Voice Clarity</td><td>AI effects without draining laptop battery during long meetings</td></tr>
                         <tr><td><strong>Zoom</strong></td><td>Virtual backgrounds, Noise Suppression, Smart Gallery</td><td>Crisp video calls with AI running on dedicated silicon</td></tr>
+                        <tr><td><strong>Krisp</strong> (Krisp Technologies)</td><td>AI noise suppression and voice isolation</td><td>Quiet, intelligible meetings even in noisy environments — fully local</td></tr>
                         <tr><td><strong>OBS Studio</strong></td><td>AI Background Removal, Noise Gate, Auto Framing</td><td>Live streaming with AI effects at minimal CPU/GPU cost</td></tr>
+                        <tr><td><strong>LiquidText</strong></td><td>Local document understanding and connections</td><td>NPU-assisted research workflows on PDFs and notes</td></tr>
                         <tr><td><strong>WhatsApp</strong></td><td>Background Blur, AI Filters</td><td>Always-on video effects without battery drain</td></tr>
                     </tbody>
                 </table>
@@ -2262,11 +2337,12 @@ print(f"Edge coherence:    {results['coherence']:.2f}")</pre></div>
                 <table class="capability-table">
                     <thead><tr><th>Application</th><th>NPU Features</th><th>Benefit</th></tr></thead>
                     <tbody>
-                        <tr><td><strong>Visual Studio / VS Code</strong></td><td>GitHub Copilot local completion, AI Toolkit</td><td>Code suggestions with local model inference — works offline</td></tr>
+                        <tr><td><strong>Visual Studio / VS Code</strong></td><td>GitHub Copilot local completion, Foundry Toolkit</td><td>Code suggestions with local model inference — works offline</td></tr>
                         <tr><td><strong>Microsoft 365 Copilot</strong></td><td>Local document analysis, Semantic Index</td><td>AI-assisted productivity without sending docs to the cloud</td></tr>
                         <tr><td><strong>Paint</strong></td><td>Cocreator (AI image generation), Background removal</td><td>Generate and edit images with AI right in Windows</td></tr>
                         <tr><td><strong>Photos</strong></td><td>Super Resolution, Image Creator, Auto-enhance</td><td>NPU-powered photo enhancement in the built-in Photos app</td></tr>
                         <tr><td><strong>Snipping Tool</strong></td><td>Text Actions (OCR), Live Captions</td><td>Extract and interact with text from any screenshot</td></tr>
+                        <tr><td><strong>Teknikos PDF Explorer</strong></td><td>On-device document intelligence over PDFs</td><td>Demonstrates productivity AI patterns running entirely on the NPU</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -2281,8 +2357,52 @@ print(f"Edge coherence:    {results['coherence']:.2f}")</pre></div>
                     <tbody>
                         <tr><td><strong>Microsoft Defender</strong></td><td>On-device threat detection, behavior analysis</td><td>Real-time malware detection with AI that doesn't slow down your PC</td></tr>
                         <tr><td><strong>Windows Hello</strong></td><td>Face recognition, anti-spoofing detection</td><td>Secure, instant authentication using NPU-accelerated vision models</td></tr>
+                        <tr><td><strong>CrowdStrike Falcon</strong></td><td>NPU-accelerated threat-detection inference</td><td>Faster, more power-efficient endpoint security on Copilot+ PCs</td></tr>
+                        <tr><td><strong>McAfee Deepfake Detector</strong></td><td>Local deepfake detection on the NPU</td><td>Up to ~300% better performance vs. CPU-only deepfake scanning</td></tr>
+                        <tr><td><strong>Norton Antivirus</strong></td><td>Local scam and deepfake detection</td><td>Real-time threat analysis without sending content to the cloud</td></tr>
+                        <tr><td><strong>Bufferzone</strong> (Bufferzone Security)</td><td>Local phishing detection and threat analysis</td><td>Protects users while keeping all signals on-device</td></tr>
+                        <tr><td><strong>Guacamole</strong> (Hummingbird AI)</td><td>Touchless continuous authentication on the NPU</td><td>Persistent identity verification without typed passwords</td></tr>
                     </tbody>
                 </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--accent-glow);color:var(--accent)">♿</div>
+                    <div><h3>Accessibility</h3><div class="card-subtitle">On-device AI that adapts the PC to the user</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Application</th><th>NPU Features</th><th>Benefit</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Cephable</strong></td><td>Adaptive input via on-device gesture and expression recognition</td><td>Hands-free PC control using the NPU's vision models</td></tr>
+                        <tr><td><strong>Dot Vista</strong> (Dot Incorporation)</td><td>Real-time scene understanding and OCR on-device</td><td>Assistive context-awareness for users with vision impairments</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon" style="background:var(--amber-dim);color:var(--amber)">🛠️</div>
+                    <div><h3>Local AI Frameworks &amp; Dev Tools</h3><div class="card-subtitle">Building blocks for shipping on-device AI</div></div>
+                </div>
+                <table class="capability-table">
+                    <thead><tr><th>Application</th><th>NPU Features</th><th>Benefit</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>GAIA</strong> (AMD)</td><td>Local agent framework using the AMD Ryzen AI XDNA NPU</td><td>Out-of-the-box agentic AI on AMD Copilot+ PCs</td></tr>
+                        <tr><td><strong>FastFlowLM</strong></td><td>Direct LLM inference on the AMD Ryzen AI NPU</td><td>Runs language models on the NPU instead of CPU/GPU</td></tr>
+                        <tr><td><strong>Amuse AI</strong> (TensorStack)</td><td>Local Stable Diffusion-style text-to-image, often on AMD/NPU</td><td>Free, private image generation on the device</td></tr>
+                        <tr><td><strong>Model HQ</strong> (LLMWare / AI Bloks)</td><td>Deploy and manage SLMs &amp; AI workflows locally for enterprises</td><td>Governance and ops layer for on-device LLMs</td></tr>
+                        <tr><td><strong>EdgeRunner</strong> (EdgeRunner AI)</td><td>On-device assistant powered by SLMs, fully local</td><td>Air-gap-friendly assistant for sensitive environments</td></tr>
+                        <tr><td><strong>Generate AI PC</strong> (Iterate.ai)</td><td>Enterprise local LLM, document intelligence, agentic workflows</td><td>Turnkey enterprise AI platform that runs on AI PCs</td></tr>
+                        <tr><td><strong>Qualcomm NPU Benchmark</strong> (Useful Sensors)</td><td>Inference throughput benchmark for Qualcomm NPUs</td><td>Validate ML performance across Snapdragon Copilot+ PCs</td></tr>
+                        <tr><td><strong>flutter_local_ai</strong></td><td>Windows AI APIs / Windows ML for hardware acceleration</td><td>Flutter apps that auto-target NPU on Copilot+ PCs</td></tr>
+                    </tbody>
+                </table>
+                <div class="info-box tip">
+                    Want even more? The <a href="https://runslocal.ai/" target="_blank" rel="noopener">runslocal.ai</a> registry
+                    is the most current public catalog of apps and devices running AI locally — including community-submitted
+                    benchmark results across CPUs, GPUs, and NPUs.
+                </div>
             </div>
 
             <div class="card">
@@ -2631,7 +2751,7 @@ Stack choices:
                 <table class="capability-table">
                     <thead><tr><th>Detail</th><th>Description</th></tr></thead>
                     <tbody>
-                        <tr><td><strong>Format</strong></td><td>Full day or split session delivery</td></tr>
+                        <tr><td><strong>Format</strong></td><td>2–4 hours (single session or split delivery)</td></tr>
                         <tr><td><strong>Audience</strong></td><td>Business and technical stakeholders together</td></tr>
                         <tr><td><strong>Positioning</strong></td><td>Decide what is worth pursuing and what is not</td></tr>
                     </tbody>
@@ -2652,6 +2772,19 @@ Stack choices:
                         <tr><td><strong>IT Architects / Employee Experience</strong></td><td>Scenario Mapping Workshop</td></tr>
                     </tbody>
                 </table>
+                <div class="workshop-cta" style="margin-top:20px;padding:18px;border-radius:10px;background:var(--green-dim);border:1px solid var(--green);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;">
+                    <div style="flex:1;min-width:240px;">
+                        <div style="font-weight:600;color:var(--text);margin-bottom:4px;">📨 Request an Envisioning Workshop</div>
+                        <div style="font-size:13px;color:var(--text-dim);line-height:1.5;">
+                            Submit your details to the Microsoft Surface Engineering team and we'll reach out to scope a session for your organization.
+                        </div>
+                    </div>
+                    <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR2wj6Gbb7WdGoqzv5eL0ug5UNzdFVkM3T1JTUEZVN09FVEkxT1NTVEdSMiQlQCN0PWcu"
+                       target="_blank" rel="noopener"
+                       style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:var(--green);color:#0b1411;font-weight:600;text-decoration:none;border-radius:8px;white-space:nowrap;">
+                        Request Workshop →
+                    </a>
+                </div>
             </div>
 
             <div class="card">
@@ -2690,19 +2823,32 @@ Stack choices:
                     <strong>Cloud First to Edge Forward</strong> webinar, align your stakeholders in the 
                     <strong>Envisioning Workshop</strong>, then build it in the <strong>Dev Kickstarter</strong>.
                 </div>
+                <div class="workshop-cta" style="margin-top:20px;padding:18px;border-radius:10px;background:var(--purple-dim);border:1px solid var(--purple);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;">
+                    <div style="flex:1;min-width:240px;">
+                        <div style="font-weight:600;color:var(--text);margin-bottom:4px;">🛠️ Request a Developer Workshop</div>
+                        <div style="font-size:13px;color:var(--text-dim);line-height:1.5;">
+                            Bring your team together with Microsoft Surface Engineering to design and start building a working PoC on Copilot+ PC hardware.
+                        </div>
+                    </div>
+                    <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=v4j5cvGGr0GRqy180BHbR2wj6Gbb7WdGoqzv5eL0ug5UMjZMUkhKOTYwOU41RThBOTJONlZJUk1SRyQlQCN0PWcu"
+                       target="_blank" rel="noopener"
+                       style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:var(--purple);color:#fff;font-weight:600;text-decoration:none;border-radius:8px;white-space:nowrap;">
+                        Request Workshop →
+                    </a>
+                </div>
             </div>
         </div>
 
     </main>
 </div>
 
-<!-- Floating Professor NPU Chatbot Widget -->
+<!-- Floating Apollo Chatbot Widget -->
 <div class="prof-widget" id="profWidget">
     <div class="prof-widget-header" onclick="toggleProfWidget()">
-        <div class="prof-widget-avatar">🎓</div>
+        <div class="prof-widget-avatar">🚀</div>
         <div class="prof-widget-title">
-            <strong>Professor NPU</strong>
-            <span>AI Guide — <span id="profModelIndicator" class="prof-model-indicator" style="display:none"></span></span>
+            <strong>Apollo</strong>
+            <span>AI Mission Commander — <span id="profModelIndicator" class="prof-model-indicator" style="display:none"></span></span>
         </div>
         <div class="prof-widget-controls">
             <button class="prof-voice-toggle" id="profVoiceToggle" onclick="event.stopPropagation();toggleVoiceMode()" title="Toggle voice mode">
@@ -2714,14 +2860,14 @@ Stack choices:
     <div class="prof-widget-body" id="profWidgetBody">
         <div class="prof-widget-messages" id="profWidgetMessages">
             <div class="prof-msg professor">
-                👋 I'm <strong>Professor NPU</strong>, your AI guide! Ask me anything about NPUs, Foundry Local, AI Toolkit, model optimization, or on-device AI. Common questions are answered instantly — even when offline!
+                👋 I'm <strong>Apollo</strong>, your AI mission commander! Ask me anything about NPUs, Foundry Local, Foundry Toolkit, model optimization, or on-device AI. Common questions are answered instantly — even when offline!
                 <div class="prof-quick-actions">
                     <button onclick="sendWidgetQuick('What is an NPU?')">🧠 What is an NPU?</button>
                     <button onclick="sendWidgetQuick('How do I run my first model in Foundry Local?')">🏗️ First model</button>
                     <button onclick="sendWidgetQuick('What model should I use?')">⚡ Pick a model</button>
-                    <button onclick="sendWidgetQuick('What is AI Toolkit?')">🧰 AI Toolkit</button>
+                    <button onclick="sendWidgetQuick('What is Foundry Toolkit?')">🧰 Foundry Toolkit</button>
                     <button onclick="sendWidgetQuick('How does voice mode work?')">🎤 Voice mode</button>
-                    <button onclick="sendWidgetQuick('Where do I start?')">🚀 Getting started</button>
+                    <button onclick="sendWidgetQuick('Where do I start?')">🚀 Mission start</button>
                 </div>
             </div>
         </div>
@@ -2729,19 +2875,19 @@ Stack choices:
             <button class="prof-mic-btn" id="profMicBtn" onclick="toggleMic()" title="Voice input (speech-to-text)">
                 🎤
             </button>
-            <input type="text" id="profWidgetInput" placeholder="Ask Professor NPU…"
+            <input type="text" id="profWidgetInput" placeholder="Ask Apollo…"
                    onkeydown="if(event.key==='Enter')sendWidgetMessage()">
             <button class="prof-send-btn" onclick="sendWidgetMessage()">→</button>
         </div>
     </div>
 </div>
 
-<!-- Floating Professor Avatar Button (shown when widget is collapsed) -->
-<button class="prof-fab" id="profFab" onclick="toggleProfWidget()" title="Ask Professor NPU">
-    🎓
+<!-- Floating Apollo Avatar Button (shown when widget is collapsed) -->
+<button class="prof-fab" id="profFab" onclick="toggleProfWidget()" title="Ask Apollo">
+    🚀
 </button>
 
-<!-- Professor Guided Tour — Full-Screen Overlay -->
+<!-- Apollo Mission Briefing — Full-Screen Overlay -->
 <div class="tour-overlay" id="tourOverlay">
 
     <!-- SETUP SCREEN (covers everything before a plan is built) -->
@@ -2749,9 +2895,9 @@ Stack choices:
         <button class="tour-exit-btn" onclick="closeTour()">✕ Exit Tour</button>
         <div class="tour-setup-card">
             <div class="tour-setup-header">
-                <span class="tour-hat">🎓</span>
-                <h2>Professor NPU's Guided Tour</h2>
-                <p>I'll build a custom lesson plan that maximizes your learning time — or browse all topics at your own pace.</p>
+                <span class="tour-hat">🚀</span>
+                <h2>Apollo's Mission Briefing</h2>
+                <p>I'll build a custom mission plan that maximizes your launch time — or browse all topics at your own pace.</p>
             </div>
             <div class="tour-setup-body">
                 <button class="prof-browse-btn" onclick="browseCurriculum()">
@@ -2797,9 +2943,9 @@ Stack choices:
         <aside class="tour-rail">
             <div class="tour-rail-header">
                 <div class="tour-rail-brand">
-                    <span>🎓</span>
+                    <span>🚀</span>
                     <div>
-                        <strong>Guided Tour</strong>
+                        <strong>Mission Briefing</strong>
                         <div class="tour-rail-meta">
                             <span class="plan-badge" id="planLevel">Level 200</span>
                             <span class="plan-badge" id="planTime">30 min</span>
@@ -2823,18 +2969,18 @@ Stack choices:
             </div>
         </div>
 
-        <!-- Right panel — Professor NPU chat -->
+        <!-- Right panel — Apollo chat -->
         <aside class="tour-chat">
             <div class="tour-chat-header">
-                <span class="tour-hat-sm">🎓</span>
+                <span class="tour-hat-sm">🚀</span>
                 <div>
-                    <strong>Professor NPU</strong>
-                    <span class="prof-title">Ask me anything about this lesson</span>
+                    <strong>Apollo</strong>
+                    <span class="prof-title">Ask me anything about this mission</span>
                 </div>
             </div>
             <div class="tour-chat-messages" id="profMessages"></div>
             <div class="tour-chat-input">
-                <input type="text" id="profInput" placeholder="Ask Professor NPU…"
+                <input type="text" id="profInput" placeholder="Ask Apollo…"
                        onkeydown="if(event.key==='Enter')sendProfMessage()">
                 <button class="prof-send-btn" onclick="sendProfMessage()">→</button>
             </div>

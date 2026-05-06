@@ -839,12 +839,12 @@ function copyCmd(btn) {
 function browseCurriculum() {
     closeTour();
     navigateTo('hardware');
-    // Open the chatbot so Professor NPU is available while browsing
+    // Open the chatbot so Apollo is available while browsing
     if (!widgetOpen) toggleProfWidget();
 }
 
 // ---------------------------------------------------------------------------
-// Floating Professor NPU Widget (always-available chatbot)
+// Floating Apollo Widget (always-available chatbot)
 // ---------------------------------------------------------------------------
 let widgetChatHistory = [];
 let widgetStreaming = false;
@@ -878,7 +878,7 @@ const FAQ_DATABASE = [
       answer: '**Running your first model in Foundry Local:**\n\n```bash\n# Start the service\nfoundry service start\n\n# Run Phi-4 Mini on NPU (recommended for Intel)\nfoundry model run phi-4-mini\n\n# Or list all available models first\nfoundry model list\n```\n\nThe first run downloads the model (~2-4 GB). After that, it starts near-instantly and works offline.\n\nIn code, use the OpenAI SDK:\n```python\nfrom openai import OpenAI\nclient = OpenAI(base_url="http://127.0.0.1:<port>/v1", api_key="none")\n```\n\n**Try this!** Go to the **Models** page to see which models are recommended for your hardware.' },
 
     { patterns: ['foundry not working', 'foundry offline', 'foundry error', 'foundry won\'t start', 'can\'t connect to foundry'],
-      answer: '**Troubleshooting Foundry Local:**\n\n1. **Check status**: `foundry service status`\n2. **Start it**: `foundry service start`\n3. **Restart it**: `foundry service stop` then `foundry service start`\n4. **Check models**: `foundry model list` — make sure a model is downloaded\n5. **Port conflict**: Foundry uses a dynamic port. Don\'t hardcode — use SDK discovery.\n\nIf the chatbot says "offline", try refreshing the page. NPUniversity auto-starts Foundry when the app launches.\n\n**Try this!** Open a terminal and run `foundry service status` to check.' },
+      answer: '**Troubleshooting Foundry Local:**\n\n1. **Check status**: `foundry service status`\n2. **Start it**: `foundry service start`\n3. **Restart it**: `foundry service stop` then `foundry service start`\n4. **Check models**: `foundry model list` — make sure a model is downloaded\n5. **Port conflict**: Foundry uses a dynamic port. Don\'t hardcode — use SDK discovery.\n\nIf the chatbot says "offline", try refreshing the page. Surface AI Launchpad auto-starts Foundry when the app launches.\n\n**Try this!** Open a terminal and run `foundry service status` to check.' },
 
     // Models
     { patterns: ['what model should i use', 'which model', 'best model', 'recommend a model', 'model recommendation'],
@@ -891,8 +891,8 @@ const FAQ_DATABASE = [
       answer: '**Phi-Silica** is extraordinary — it\'s an SLM built directly into Windows 11 on Copilot+ PCs:\n\n- **Speed**: 650 tokens/sec\n- **Power**: Only 1.5 watts\n- **No download needed** — already on your device\n- **API**: `PhiSilicaModel.CreateAsync()` in Windows App SDK\n- **Context**: ~4K tokens\n\nIt powers the **TextEmbedding API** (384-dim vectors for search/RAG) and **OCR API** (text extraction from screen content — this is what powers Recall).\n\n**Try this!** Check the **Windows ML** page for code examples.' },
 
     // AI Toolkit
-    { patterns: ['what is ai toolkit', 'ai toolkit', 'how to use ai toolkit', 'install ai toolkit'],
-      answer: '**AI Toolkit** is a VS Code extension for model development:\n\n- 📦 **Model Catalog**: Browse and download models from Hugging Face, Azure AI, and Foundry\n- 🎮 **Playground**: Test prompts, adjust parameters, compare outputs side-by-side\n- 🔧 **Fine-Tuning**: Customize models with your own data using LoRA/QLoRA\n- 📤 **Export**: Convert to ONNX for cross-platform deployment\n\nInstall it from the VS Code Extensions marketplace: search for "AI Toolkit".\n\n**Try this!** Navigate to the **AI Toolkit** page for a complete walkthrough.' },
+    { patterns: ['what is ai toolkit', 'ai toolkit', 'how to use ai toolkit', 'install ai toolkit', 'foundry toolkit', 'what is foundry toolkit'],
+      answer: '**Foundry Toolkit** (formerly **AI Toolkit**) is a VS Code extension for building AI apps and agents:\n\n- 📦 **Model Catalog**: Discover models from Microsoft Foundry, Foundry Local, GitHub, ONNX, Ollama, OpenAI, Anthropic, and Google\n- 🎮 **Playground**: Multi-modal chat (text, images, attachments) with parameter controls\n- 🤖 **Agent Builder & Inspector**: Design prompt agents with MCP tools, then debug them visually\n- 🧰 **Tool Catalog**: Connect Foundry tools and local MCP servers to your agents\n- 📊 **Evaluation & Tracing**: Built-in evaluators (F1, relevance, coherence) plus trace visualization\n- 🪟 **Profiling (Windows ML)**: Inspect ONNX model behavior on CPU/GPU/NPU\n- 🔧 **Fine-Tuning & Model Conversion**: Quantize for local CPU/GPU/NPU or fine-tune locally / in Azure\n\nInstall it from the VS Code Extensions marketplace: search for "AI Toolkit" or "Foundry Toolkit". Docs: code.visualstudio.com/docs/intelligentapps/overview\n\n**Try this!** Navigate to the **AI Toolkit** page for a complete walkthrough.' },
 
     // Windows features
     { patterns: ['what is recall', 'how does recall work', 'recall feature', 'explain recall'],
@@ -925,14 +925,14 @@ const FAQ_DATABASE = [
 
     // Speech / Voice
     { patterns: ['speech to text', 'voice input', 'voice mode', 'how does voice work', 'speech recognition', 'stt', 'tts', 'text to speech'],
-      answer: '**Voice Mode** in NPUniversity uses **on-device Whisper** for speech-to-text and the **Web Speech API** for text-to-speech:\n\n🎤 **Speech-to-Text (STT)**: Click the microphone button → speak → click stop → your audio is transcribed on-device by Whisper and sent automatically\n🔊 **Text-to-Speech (TTS)**: Toggle the speaker icon → Professor NPU reads responses aloud\n\nBoth run **entirely on-device** — no cloud transcription service, no API costs. Whisper provides accurate, reliable transcription across all browsers.\n\n**Try this!** Click 🎤 below and ask a question by voice!' },
+      answer: '**Voice Mode** in Surface AI Launchpad uses **on-device Whisper** for speech-to-text and the **Web Speech API** for text-to-speech:\n\n🎤 **Speech-to-Text (STT)**: Click the microphone button → speak → click stop → your audio is transcribed on-device by Whisper and sent automatically\n🔊 **Text-to-Speech (TTS)**: Toggle the speaker icon → Apollo reads responses aloud\n\nBoth run **entirely on-device** — no cloud transcription service, no API costs. Whisper provides accurate, reliable transcription across all browsers.\n\n**Try this!** Click 🎤 below and ask a question by voice!' },
 
-    // NPUniversity meta
-    { patterns: ['what is npuniversity', 'what is this app', 'what is this', 'how to use this', 'help'],
-      answer: '**NPUniversity** is your virtual campus for learning on-device AI with Copilot+ PCs!\n\n📚 **How to use it:**\n1. **Sidebar navigation**: Browse topics from Getting Started → Deep Dive → Agents & Cloud\n2. **Guided Tour**: Click the 🎓 tour button for a timed lesson plan\n3. **Chat with me**: Ask anything about NPUs, models, or AI development\n4. **Voice mode**: Click 🎤 to speak, toggle 🔊 for spoken responses\n\n**Topic areas**: Hardware, Foundry Local, Models, AI Toolkit, Windows NPU Features, Edge AI, Optimization, Agents, Cloud Foundry, Hybrid AI, and more.\n\n**Try this!** Start with the **Hardware** page to see your device\'s AI capabilities.' },
+    // Surface AI Launchpad meta
+    { patterns: ['what is surface ai launchpad', 'what is launchpad', 'what is npuniversity', 'what is this app', 'what is this', 'how to use this', 'help'],
+      answer: '**Surface AI Launchpad** (formerly NPUniversity) is your mission control for learning and shipping on-device AI across CPU, GPU, and NPU on Copilot+ PCs!\n\n🚀 **How to use it:**\n1. **Sidebar navigation**: Browse topics from Getting Started → Deep Dive → Agents & Cloud\n2. **Mission Briefing**: Click the 🚀 button for a custom, timed mission plan\n3. **Chat with me**: Ask anything about NPUs, models, or AI development\n4. **Voice mode**: Click 🎤 to speak, toggle 🔊 for spoken responses\n\n**Topic areas**: Hardware, Foundry Local, Models, Foundry Toolkit, Windows NPU Features, Edge AI, Optimization, Agents, Cloud Foundry, Hybrid AI, ISV apps, and more.\n\n**Try this!** Start with the **Hardware** page to see your device\'s AI capabilities.' },
 
     { patterns: ['what can you do', 'what do you know', 'what are you', 'who are you'],
-      answer: 'I\'m **Professor NPU** 🎓 — your AI guide at NPUniversity!\n\nI can help with:\n- 🔧 **NPU & Hardware**: What your device can do, NPU vs GPU vs CPU\n- 🏗️ **Foundry Local**: Setup, troubleshooting, running models\n- 🤖 **Models**: Which SLM to pick, quantization, optimization\n- 🧰 **AI Toolkit**: Playground, fine-tuning, ONNX export\n- 🪟 **Windows AI**: Recall, Click to Do, Semantic Search, Super Resolution\n- 🤖 **Agents**: Function calling, multi-agent patterns\n- ☁️ **Cloud & Hybrid**: Microsoft Foundry, Model Router, hybrid patterns\n\nI answer common questions **instantly** from my FAQ knowledge. For deeper questions, I use the AI model running on your NPU!\n\n**Try this!** Ask me "what is an NPU?" or "how do I run my first model?"' },
+      answer: 'I\'m **Apollo** 🚀 — your AI mission commander at Surface AI Launchpad!\n\nI can help with:\n- 🔧 **NPU & Hardware**: What your device can do, NPU vs GPU vs CPU\n- 🏗️ **Foundry Local**: Setup, troubleshooting, running models\n- 🤖 **Models**: Which SLM to pick, quantization, optimization\n- 🧰 **Foundry Toolkit**: Playground, agents, fine-tuning, ONNX export\n- 🪟 **Windows AI**: Recall, Click to Do, Semantic Search, Super Resolution\n- 🤖 **Agents**: Function calling, multi-agent patterns\n- ☁️ **Cloud & Hybrid**: Microsoft Foundry, Model Router, hybrid patterns\n\nI answer common questions **instantly** from my mission database. For deeper questions, I use the AI model running on your NPU!\n\n**Try this!** Ask me "what is an NPU?" or "how do I run my first model?"' },
 
     // Getting started
     { patterns: ['where do i start', 'getting started', 'beginner', 'new to this', 'first steps'],

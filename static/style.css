@@ -17,13 +17,13 @@
 body { padding-top: 32px; }
 
 :root {
-    --bg: #0a0a0f;
-    --surface: #12121a;
-    --surface-2: #1a1a2e;
-    --surface-3: #222240;
-    --border: #2a2a4a;
+    --bg: #050816;
+    --surface: #0e0f24;
+    --surface-2: #14172e;
+    --surface-3: #1d2244;
+    --border: #2a2f55;
     --text: #e8e8f0;
-    --text-dim: #8888aa;
+    --text-dim: #8c92b8;
     --accent: #6366f1;
     --accent-glow: rgba(99, 102, 241, 0.15);
     --green: #22c55e;
@@ -40,11 +40,43 @@ body { padding-top: 32px; }
     --radius-sm: 8px;
 }
 
+/* Surface AI Launchpad — cosmic backdrop (fixed starfield + nebula glow) */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+        radial-gradient(1200px 700px at 12% -10%, rgba(99, 102, 241, 0.18), transparent 60%),
+        radial-gradient(900px 600px at 95% 110%, rgba(168, 85, 247, 0.16), transparent 60%),
+        radial-gradient(700px 500px at 80% 0%, rgba(59, 130, 246, 0.10), transparent 60%),
+        var(--bg);
+}
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.55;
+    background-image:
+        radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.85), transparent 60%),
+        radial-gradient(1px 1px at 28% 72%, rgba(255,255,255,0.7), transparent 60%),
+        radial-gradient(1.5px 1.5px at 47% 33%, rgba(255,255,255,0.9), transparent 60%),
+        radial-gradient(1px 1px at 63% 84%, rgba(255,255,255,0.6), transparent 60%),
+        radial-gradient(1.5px 1.5px at 81% 22%, rgba(200,220,255,0.85), transparent 60%),
+        radial-gradient(1px 1px at 92% 56%, rgba(255,255,255,0.7), transparent 60%),
+        radial-gradient(1px 1px at 7% 91%, rgba(255,255,255,0.6), transparent 60%),
+        radial-gradient(1.5px 1.5px at 36% 9%, rgba(220,235,255,0.85), transparent 60%),
+        radial-gradient(1px 1px at 71% 47%, rgba(255,255,255,0.55), transparent 60%);
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--bg);
+    background: transparent;
     color: var(--text);
     line-height: 1.6;
     min-height: 100vh;
@@ -1412,7 +1444,7 @@ body {
     animation: fadeIn 0.25s ease;
 }
 
-/* Right panel — Professor NPU chat */
+/* Right panel — Apollo chat */
 .tour-chat {
     background: var(--surface);
     border-left: 1px solid var(--border);
@@ -1561,7 +1593,7 @@ body {
 .prof-typing span:nth-child(3) { animation-delay: 0.4s; }
 
 /* ===================================================================
-   Floating Professor NPU Widget
+   Floating Apollo Widget
    =================================================================== */
 
 /* FAB (Floating Action Button) — shown when widget is collapsed */
