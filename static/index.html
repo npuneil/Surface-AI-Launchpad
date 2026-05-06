@@ -2454,6 +2454,7 @@ print(f"Edge coherence:    {results['coherence']:.2f}")</pre></div>
             <!-- Industry Pill Grid -->
             <div id="industry-pills" class="industry-pill-grid">
                 <button class="industry-pill" onclick="showIndustryDetail('financial')" style="--pill-color: var(--blue)">💰 Financial Services</button>
+                <button class="industry-pill" onclick="showIndustryDetail('healthcare')" style="--pill-color: var(--red, #ff6b6b)">⚕️ Healthcare</button>
                 <button class="industry-pill" onclick="showIndustryDetail('insurance')" style="--pill-color: var(--green)">🏥 Insurance</button>
                 <button class="industry-pill" onclick="showIndustryDetail('professional')" style="--pill-color: var(--accent)">👔 Professional Services</button>
                 <button class="industry-pill" onclick="showIndustryDetail('energy')" style="--pill-color: var(--amber, #f59e0b)">⚡ Energy &amp; Utilities</button>
@@ -2494,6 +2495,39 @@ print(f"Edge coherence:    {results['coherence']:.2f}")</pre></div>
                         no cloud APIs, no third-party data processors, zero exposure risk.
                         <br><br>
                         <a href="https://github.com/npuneil/Data-Prep-Demo" target="_blank" style="color:var(--accent)">📂 View prototype on GitHub →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Healthcare Detail -->
+            <div class="industry-detail" id="detail-healthcare" style="display:none">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:var(--red-dim, #3a1a1a);color:var(--red, #ff6b6b)">⚕️</div>
+                        <div><h3>Healthcare — Clinical Workflows at the Point of Care</h3><div class="card-subtitle">HIPAA-aligned on-device AI for clinicians, patients, and PHI</div></div>
+                    </div>
+                    <p style="font-size:14px;color:var(--text-dim);line-height:1.7;margin-bottom:12px;">
+                        Healthcare workflows demand the strictest privacy controls — Protected Health Information (PHI) cannot leave the device
+                        in many regulated settings. NPU-powered clinical assistants summarize visits, draft notes, triage symptoms, and surface
+                        guidelines locally, so clinicians keep their attention on the patient and PHI never traverses the cloud.
+                    </p>
+                    <table class="capability-table">
+                        <thead><tr><th>Capability</th><th>How NPU Enables It</th></tr></thead>
+                        <tbody>
+                            <tr><td><strong>Ambient Clinical Scribe</strong></td><td>Local speech-to-text + SLM summarization drafts SOAP notes from the patient encounter without sending audio off-device</td></tr>
+                            <tr><td><strong>Medical Imaging Triage</strong></td><td>NPU-accelerated vision models pre-screen X-rays, dermatology photos, and retinal scans on-device for clinician review</td></tr>
+                            <tr><td><strong>PHI De-identification</strong></td><td>Local NER models redact names, MRNs, and identifiers from documents before any data is shared downstream</td></tr>
+                            <tr><td><strong>Clinical Decision Support</strong></td><td>Retrieval-augmented SLMs surface relevant guidelines, drug interactions, and prior chart context entirely offline</td></tr>
+                            <tr><td><strong>Patient-Facing Assistants</strong></td><td>On-device symptom triage and post-visit Q&amp;A keep sensitive health questions on the patient's own device</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="info-box tip">
+                        <strong>Why NPU matters here:</strong> Healthcare data is governed by HIPAA, GDPR, and a patchwork of state and national rules.
+                        Hospitals, rural clinics, EMS vehicles, and home-health visits frequently operate with limited or no connectivity. Running
+                        ambient scribing, imaging triage, and PHI de-identification on the NPU means clinicians get low-latency AI assistance with
+                        sensitive data never leaving the Copilot+ PC — and battery life that lasts a full shift.
+                        <br><br>
+                        <a href="https://github.com/npuneil" target="_blank" style="color:var(--accent)">📂 Explore on-device AI prototypes on GitHub →</a>
                     </div>
                 </div>
             </div>
