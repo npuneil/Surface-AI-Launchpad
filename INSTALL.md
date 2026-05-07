@@ -8,8 +8,8 @@ Not sure which one you have? Press `Windows + Pause/Break` (or open **Settings â
 
 | You see... | Download |
 |---|---|
-| **ARM-based processor** (Snapdragon X / X Elite, Surface Pro 11, Surface Laptop 7) | **`SurfaceAILaunchpad-Snapdragon-v1.1.0.zip`** |
-| **x64-based processor** (Intel Core, AMD Ryzen) | **`SurfaceAILaunchpad-Intel-v1.1.0.zip`** |
+| **ARM-based processor** (Snapdragon X / X Elite, Surface Pro 11, Surface Laptop 7) | **`SurfaceAILaunchpad-Snapdragon-v1.3.0.zip`** |
+| **x64-based processor** (Intel Core, AMD Ryzen) | **`SurfaceAILaunchpad-Intel-v1.3.0.zip`** |
 
 > ðŸ’¡ Snapdragon PCs get faster, more efficient on-device AI thanks to the built-in NPU. Intel/AMD x64 devices fall back to CPU/GPU and still work great.
 
