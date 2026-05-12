@@ -137,7 +137,7 @@ public static class Prerequisites
             {
                 Id = "model",
                 Name = "NPU-optimized model",
-                Description = "Pulls a Phi-4-mini variant tuned for your detected accelerator.",
+                Description = "Pulls the best SLM for your detected accelerator (Phi-4-mini for Intel, Phi-3.5-mini for Qualcomm).",
                 Required = false,
                 DocsUrl = "https://learn.microsoft.com/azure/ai-foundry/foundry-local/concepts/foundry-local-architecture"
             }
@@ -399,8 +399,13 @@ public static class Prerequisites
     {
         var vendor = DetectNpuVendor();
         // Foundry Local accepts an alias and picks the optimal variant for the device.
-        // We use --device hints when an NPU vendor is detected.
-        string alias = "phi-4-mini";
+        // phi-4-mini is only available as OpenVINO (Intel) and CPU/GPU — no QNN variant
+        // exists, so Qualcomm devices use phi-3.5-mini (best available QNN model).
+        string alias = vendor switch
+        {
+            NpuVendor.Qualcomm => "phi-3.5-mini",
+            _ => "phi-4-mini"
+        };
         string deviceArg = vendor switch
         {
             NpuVendor.Qualcomm => "--device NPU",
