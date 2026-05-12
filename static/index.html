@@ -407,9 +407,9 @@
                         <div class="step-content">
                             <h4>Run a model interactively</h4>
                             <p>Start chatting with a model directly in your terminal:</p>
-                            <div class="cmd-block">foundry model run phi-4-mini<button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
+                            <div class="cmd-block" id="cmd-run-model">foundry model run phi-4-mini<button class="copy-btn" onclick="copyCmd(this)">Copy</button></div>
                             <div class="info-box tip">For NPU models, add <code>--device NPU</code>: 
-                            <code>foundry model run qwen2.5-7b --device NPU</code></div>
+                            <code id="cmd-npu-example">foundry model run qwen2.5-7b --device NPU</code></div>
                         </div>
                     </div>
                 </div>

@@ -86,6 +86,13 @@ async function loadHardware() {
         const resp = await fetch('/api/hardware');
         hwData = await resp.json();
         renderHardware(hwData);
+        // Update getting-started commands for Qualcomm users (phi-4-mini has no QNN variant)
+        if (hwData?.summary?.silicon_vendor === 'Qualcomm') {
+            const cmdRun = document.getElementById('cmd-run-model');
+            if (cmdRun) cmdRun.childNodes[0].textContent = 'foundry model run phi-3.5-mini --device NPU';
+            const cmdNpu = document.getElementById('cmd-npu-example');
+            if (cmdNpu) cmdNpu.textContent = 'foundry model run phi-3.5-mini --device NPU';
+        }
     } catch (e) {
         console.error('Failed to load hardware:', e);
     }
@@ -875,10 +882,10 @@ const FAQ_DATABASE = [
       answer: '**Foundry Local** is Microsoft\'s runtime for running AI models entirely on your device. Think of it as a local AI server.\n\n🔑 **Key facts:**\n- Serves models through an **OpenAI-compatible API** on localhost\n- Supports NPU, GPU, and CPU inference\n- CLI tools: `foundry model list`, `foundry model run <alias>`, `foundry service start`\n- Dynamic port — use SDK discovery, don\'t hardcode\n- Works completely **offline** after first model download\n\n**Try this!** Run `foundry model list` in your terminal to see available models.' },
 
     { patterns: ['how to install foundry', 'install foundry local', 'get foundry local', 'setup foundry', 'foundry install'],
-      answer: '**Installing Foundry Local** is easy:\n\n```\nwinget install Microsoft.FoundryLocal\n```\n\nThen install the Python SDK:\n```\npip install foundry-local-sdk openai\n```\n\nStart the service and run your first model:\n```\nfoundry service start\nfoundry model run phi-4-mini\n```\n\n**Try this!** Navigate to the **Foundry Local** page for the complete getting-started guide.' },
+      answer: '**Installing Foundry Local** is easy:\n\n```\nwinget install Microsoft.FoundryLocal\n```\n\nThen install the Python SDK:\n```\npip install foundry-local-sdk openai\n```\n\nStart the service and run your first model:\n```\nfoundry service start\nfoundry model run phi-4-mini        # Intel / CPU\nfoundry model run phi-3.5-mini --device NPU  # Qualcomm NPU\n```\n\n**Try this!** Navigate to the **Foundry Local** page for the complete getting-started guide.' },
 
     { patterns: ['how to run a model', 'run model', 'first model', 'start a model', 'load a model'],
-      answer: '**Running your first model in Foundry Local:**\n\n```bash\n# Start the service\nfoundry service start\n\n# Run Phi-4 Mini on NPU (recommended for Intel)\nfoundry model run phi-4-mini\n\n# Or list all available models first\nfoundry model list\n```\n\nThe first run downloads the model (~2-4 GB). After that, it starts near-instantly and works offline.\n\nIn code, use the OpenAI SDK:\n```python\nfrom openai import OpenAI\nclient = OpenAI(base_url="http://127.0.0.1:<port>/v1", api_key="none")\n```\n\n**Try this!** Go to the **Models** page to see which models are recommended for your hardware.' },
+      answer: '**Running your first model in Foundry Local:**\n\n```bash\n# Start the service\nfoundry service start\n\n# Intel NPU\nfoundry model run phi-4-mini --device NPU\n\n# Qualcomm NPU (phi-4-mini is not available for QNN)\nfoundry model run phi-3.5-mini --device NPU\n\n# Or list all available models first\nfoundry model list\n```\n\nThe first run downloads the model (~2-4 GB). After that, it starts near-instantly and works offline.\n\nIn code, use the OpenAI SDK:\n```python\nfrom openai import OpenAI\nclient = OpenAI(base_url="http://127.0.0.1:<port>/v1", api_key="none")\n```\n\n**Try this!** Go to the **Models** page to see which models are recommended for your hardware.' },
 
     { patterns: ['foundry not working', 'foundry offline', 'foundry error', 'foundry won\'t start', 'can\'t connect to foundry'],
       answer: '**Troubleshooting Foundry Local:**\n\n1. **Check status**: `foundry service status`\n2. **Start it**: `foundry service start`\n3. **Restart it**: `foundry service stop` then `foundry service start`\n4. **Check models**: `foundry model list` — make sure a model is downloaded\n5. **Port conflict**: Foundry uses a dynamic port. Don\'t hardcode — use SDK discovery.\n\nIf the chatbot says "offline", try refreshing the page. Surface AI Launchpad auto-starts Foundry when the app launches.\n\n**Try this!** Open a terminal and run `foundry service status` to check.' },
