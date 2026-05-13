@@ -23,6 +23,16 @@ echo.
 echo [1/4] Installing certificate...
 if exist "%~dp0SurfaceAILaunchpad.cer" (
     certutil -addstore TrustedPeople "%~dp0SurfaceAILaunchpad.cer" >nul 2>&1
+    if %errorlevel% neq 0 (
+        echo       WARNING: Certificate install failed. Retrying with PowerShell...
+        powershell -Command "Import-Certificate -FilePath '%~dp0SurfaceAILaunchpad.cer' -CertStoreLocation Cert:\LocalMachine\TrustedPeople" >nul 2>&1
+        if %errorlevel% neq 0 (
+            echo       ERROR: Could not install certificate. Are you running as Administrator?
+            echo       Right-click this file and choose "Run as administrator".
+            pause
+            exit /b 1
+        )
+    )
     echo       Done.
 ) else (
     echo       Certificate not found - install may fail.
@@ -52,12 +62,13 @@ if not defined MSIX (
     exit /b 1
 )
 echo [3/4] Installing: %MSIX%
-powershell -Command "Add-AppxPackage -Path '%MSIX%' -ForceApplicationShutdown" 2>nul
+powershell -Command "try { Add-AppxPackage -Path '%MSIX%' -ForceApplicationShutdown -ErrorAction Stop; exit 0 } catch { Write-Host $_.Exception.Message; exit 1 }"
 if %errorlevel% neq 0 (
     echo.
-    echo [NOTE] Install failed. Please ensure:
-    echo        1. Developer Mode is on: Settings -^> System -^> For developers
-    echo        2. You are running this as Administrator
+    echo [NOTE] Install failed. Common fixes:
+    echo        1. Re-run this installer by right-clicking and choosing "Run as administrator"
+    echo        2. If that doesn't work, enable Developer Mode:
+    echo           Settings -^> System -^> For developers -^> Developer Mode ON
     echo        Then run this installer again.
     pause
     exit /b 1
