@@ -320,8 +320,8 @@ public static class Prerequisites
                 await p.WaitForExitAsync(cts.Token);
             }
             catch (OperationCanceledException) { try { p.Kill(true); } catch { } return false; }
-            // If the user has any Phi-4 / Qwen / Llama variant cached, count it as ready.
-            return Regex.IsMatch(stdout, @"(Phi-4|qwen|Llama|deepseek|mistral)", RegexOptions.IgnoreCase);
+            // If the user has any Phi / Qwen / Llama variant cached, count it as ready.
+            return Regex.IsMatch(stdout, @"(Phi-3|Phi-4|qwen|Llama|deepseek|mistral)", RegexOptions.IgnoreCase);
         }
         catch { return false; }
     }
