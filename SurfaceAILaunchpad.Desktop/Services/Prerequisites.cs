@@ -279,9 +279,10 @@ public static class Prerequisites
 
     static async Task<bool> DetectFoundryAsync()
     {
+        // Route through cmd /c so the foundry App Execution Alias resolves from a packaged process.
         try
         {
-            var psi = new ProcessStartInfo("foundry", "--version")
+            var psi = new ProcessStartInfo("cmd.exe", "/c \"foundry --version\"")
             {
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -301,9 +302,10 @@ public static class Prerequisites
     static async Task<bool> DetectModelAsync()
     {
         // Use `foundry cache list` (cli) to check locally cached models.
+        // Routed through cmd /c for App Execution Alias resolution.
         try
         {
-            var psi = new ProcessStartInfo("foundry", "cache list")
+            var psi = new ProcessStartInfo("cmd.exe", "/c \"foundry cache list\"")
             {
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -367,9 +369,24 @@ public static class Prerequisites
 
     static async Task<bool> RunWingetInstallAsync(string id, Action<string>? log)
     {
+        // Winget is an App Execution Alias (shim under %LOCALAPPDATA%\Microsoft\WindowsApps).
+        // From inside a packaged WinUI app, Process.Start("winget", ...) often fails to
+        // resolve the alias. Routing through `cmd /c` lets the shell expand the alias
+        // the same way a normal terminal does.
         var args = $"install --id {id} -e --silent --accept-package-agreements --accept-source-agreements";
         log?.Invoke($"> winget {args}");
-        var psi = new ProcessStartInfo("winget", args)
+        return await RunShellCommandAsync("winget", args, log);
+    }
+
+    /// <summary>
+    /// Runs `cmd /c <tool> <args>` so App Execution Aliases (winget, foundry, etc.)
+    /// resolve correctly from a packaged process. Returns true on exit code 0
+    /// (or winget's "already installed" code 0x8A15002B).
+    /// </summary>
+    static async Task<bool> RunShellCommandAsync(string tool, string args, Action<string>? log)
+    {
+        var cmdArgs = $"/c \"{tool} {args}\"";
+        var psi = new ProcessStartInfo("cmd.exe", cmdArgs)
         {
             RedirectStandardOutput = true,
             RedirectStandardError = true,
@@ -379,18 +396,24 @@ public static class Prerequisites
         try
         {
             using var p = Process.Start(psi);
-            if (p == null) return false;
+            if (p == null)
+            {
+                log?.Invoke($"[ERROR] Could not start cmd.exe for '{tool}'");
+                return false;
+            }
             p.OutputDataReceived += (_, e) => { if (e.Data != null) log?.Invoke(e.Data); };
             p.ErrorDataReceived += (_, e) => { if (e.Data != null) log?.Invoke(e.Data); };
             p.BeginOutputReadLine();
             p.BeginErrorReadLine();
             await p.WaitForExitAsync();
-            // winget returns 0 on success, also returns -1978335189 ("already installed") which we treat as ok.
-            return p.ExitCode == 0 || (uint)p.ExitCode == 0x8A15002B;
+            int exit = p.ExitCode;
+            log?.Invoke($"[exit {exit}] {tool}");
+            // 0 = success. winget returns -1978335189 (0x8A15002B) when the package is already installed.
+            return exit == 0 || (uint)exit == 0x8A15002B;
         }
         catch (Exception ex)
         {
-            log?.Invoke($"[winget unavailable] {ex.Message}");
+            log?.Invoke($"[ERROR] {tool}: {ex.Message}");
             return false;
         }
     }
@@ -416,28 +439,6 @@ public static class Prerequisites
 
         var args = $"model download {alias} {deviceArg}";
         log?.Invoke($"> foundry {args}");
-        var psi = new ProcessStartInfo("foundry", args)
-        {
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-        try
-        {
-            using var p = Process.Start(psi);
-            if (p == null) return false;
-            p.OutputDataReceived += (_, e) => { if (e.Data != null) log?.Invoke(e.Data); };
-            p.ErrorDataReceived += (_, e) => { if (e.Data != null) log?.Invoke(e.Data); };
-            p.BeginOutputReadLine();
-            p.BeginErrorReadLine();
-            await p.WaitForExitAsync();
-            return p.ExitCode == 0;
-        }
-        catch (Exception ex)
-        {
-            log?.Invoke($"[foundry unavailable] {ex.Message}");
-            return false;
-        }
+        return await RunShellCommandAsync("foundry", args, log);
     }
 }
